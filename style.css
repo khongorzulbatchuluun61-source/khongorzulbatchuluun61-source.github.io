@@ -1,0 +1,81 @@
+/* Нийтлэг хэв маяг */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+/* Толгой хэсэг */
+header {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav {
+  background-color: #4CAF50;
+  text-align: center;
+  padding: 10px 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+nav a:hover {
+  background-color: #45a049;
+}
+
+/* Мэдээний хэсэг */
+section {
+  padding: 20px;
+  text-align: center;
+}
+
+.news-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.news-item {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 300px;
+  padding: 10px;
+}
+
+.news-item img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+/* Холбоо барих хэсэг */
+footer {
+  background-color: #333;
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+footer .contact h2 {
+  color: #00c853;
+}
+
+footer a {
+  color: #00b0ff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+Илгээлээ
+Доржпалам Х.-д бичих

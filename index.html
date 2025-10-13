@@ -1,47 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="mn">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Мэдээллийн сайт</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      line-height: 1.6;
       margin: 0;
-      background: #f9f9f9;
-      color: #222;
+      background-color: #f4f4f4;
     }
-    header, footer {
-      background: #004aad;
-      color: #fff;
+    header {
+      background-color: #005baa;
+      color: white;
+      padding: 10px 0;
       text-align: center;
-      padding: 1rem 0;
     }
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      background: #fff;
-      padding: 2rem;
+    nav {
+      background-color: #0073e6;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+    .highlight {
+      display: flex;
+      background-color: white;
+      margin: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-    h1, h2 { color: #004aad; }
-    a { color: #004aad; text-decoration: none; }
+    .highlight img {
+      width: 50%;
+    }
+    .highlight .text {
+      padding: 20px;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px;
+    }
+    .news-item {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .news-item img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+    }
+    .news-item p {
+      padding: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #005baa;
+      color: white;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <h1>Манай мэдээллийн сайт</h1>
+    <h1>Мэдээллийн сайт</h1>
+    <p>Монголын болон дэлхийн мэдээг танд хүргэнэ</p>
   </header>
 
-  <main>
-    <h2>Сүүлийн мэдээ</h2>
-    <p>Энд таны шинэ нийтлэлүүд гарна. HTML кодоо энд нэмж болно.</p>
-  </main>
+  <nav>
+    <a href="#">Монголын мэдээ</a>
+    <a href="#">Дэлхийн мэдээ</a>
+    <a href="#">Орон нутгийн мэдээ</a>
+    <a href="#">Спорт</a>
+  </nav>
+
+  <section class="highlight">
+    <img src="https://via.placeholder.com/400x250" alt="Main news">
+    <div class="text">
+      <h2>Онцлох мэдээний гарчиг энд байна</h2>
+      <p>Энэ хэсэгт хамгийн сүүлийн болон чухал мэдээгээ байрлуулна.</p>
+    </div>
+  </section>
+
+  <section class="news-grid">
+    <div class="news-item">
+      <img src="https://via.placeholder.com/400x250" alt="News 1">
+      <p><strong>Мэдээ 1:</strong> Богино тайлбар энд орно.</p>
+    </div>
+    <div class="news-item">
+      <img src="https://via.placeholder.com/400x250" alt="News 2">
+      <p><strong>Мэдээ 2:</strong> Богино тайлбар энд орно.</p>
+    </div>
+    <div class="news-item">
+      <img src="https://via.placeholder.com/400x250" alt="News 3">
+      <p><strong>Мэдээ 3:</strong> Богино тайлбар энд орно.</p>
+    </div>
+  </section>
 
   <footer>
-    <p>&copy; 2025. Бүх эрх хуулиар хамгаалагдсан.</p>
+    © 2025. Бүх эрх хуулиар хамгаалагдсан.
   </footer>
+
 </body>
 </html>

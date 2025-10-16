@@ -1,42 +1,58 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="mn">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Мэдээний хуудас</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мэдээний сайт</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body { font-family: Arial; margin: 0; background: #f9f9f9; }
-    header, footer { background: #004aad; color: #fff; text-align: center; padding: 1rem; }
-    main { max-width: 900px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 10px; }
-    a { color: #fff; text-decoration: none; margin: 0 10px; }
-    nav a:hover { text-decoration: underline; }
-  </style>
 </head>
 <body>
+  <!-- Header -->
   <header>
-    <h1>Мэдээний хуудас</h1>
-    <!-- Навигаци -->
+    <div class="logo">Миний Сайт</div>
     <nav>
-      <a href="index.html">← Нүүр хуудас руу буцах</a>
+      <a href="index.html">Нүүр</a>
       <a href="newpage.html">Шинэ Хуудас</a>
     </nav>
   </header>
 
-  <main>
-    <article>
-      <h2>Мэдээ 1: Манай сайтад тавтай морил!</h2>
-      <p>Энэ бол таны анхны мэдээний нийтлэл юм. Энд сэтгүүл, нийтлэл, мэдээлэл гэх мэт зүйлсээ бичиж болно.</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Сайн байна уу!</h1>
+    <p>Манай сайтад тавтай морилно уу.</p>
+  </section>
+
+  <!-- Main News Section -->
+  <main class="news-list">
+    <!-- Мэдээ 1: Зурагтай -->
+    <article class="news-item">
+      <img src="news1.jpg" alt="Мэдээний зураг">
+      <h2>Мэдээ 1: Шинэ мэдээлэл</h2>
+      <p>Энэ бол мэдээний текст. Та хүсвэл тайлбар болон холбоос оруулж болно.</p>
     </article>
 
-    <article>
-      <h2>Мэдээ 2: Шинэ мэдээлэл нэмэгдлээ</h2>
-      <p>Та хүсвэл зураг, холбоос, видео гэх мэт нэмэлт контент оруулж болно.</p>
+    <!-- Мэдээ 2: Видео бүхий -->
+    <article class="news-item">
+      <h2>Мэдээ 2: Видео мэдээлэл</h2>
+      <video width="100%" height="auto" controls>
+        <source src="video.mp4" type="video/mp4">
+        Таны браузер видео дэмжихгүй байна.
+      </video>
+      <p>Энэ бол мэдээний видео тайлбар. Видео нь мэдээг илүү сонирхолтой болгоно.</p>
+    </article>
+
+    <!-- Мэдээ 3: Зураг + текст -->
+    <article class="news-item">
+      <img src="news2.jpg" alt="Мэдээний зураг">
+      <h2>Мэдээ 3: Дэлгэрэнгүй мэдээлэл</h2>
+      <p>Энэ мэдээ нь нэмэлт мэдээллийг агуулна. Холбоос, зураг, видео оруулах боломжтой.</p>
     </article>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <p>&copy; 2025. Мэдээллийн сайт</p>
+    <p>&copy; 2025. Миний Сайт</p>
   </footer>
+
 </body>
 </html>

@@ -222,3 +222,13 @@ footer a {
     margin: 10px 0;
   }
 }
+body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+nav a { margin-left: 15px; text-decoration: none; color: #333; font-weight: 500; }
+nav a:hover { color: #4ECDC4; transition: 0.3s; }
+.hero { text-align: center; padding: 80px 20px; background: linear-gradient(to right, #4ECDC4, #556270); color: #fff; }
+button { padding: 10px 20px; background: #FF6B6B; border: none; border-radius: 8px; color: #fff; cursor: pointer; }
+button:hover { background: #ff4b4b; }
+.content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 40px 20px; }
+.card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+footer { text-align: center; padding: 20px; background: #333; color: #fff; }

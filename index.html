@@ -3,126 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мэдээллийн сайт</title>
+  <title>Миний Мэдээний Сайт</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #333333;
-      background-image: url('https://i.imgur.com/zYjF7hH.jpg');
-      background-size: cover;
-      background-attachment: fixed;
-    }
-    header {
-      background-color: #333333;
-      color: white;
-      padding: 10px 0;
-      text-align: center;
-    }
-    nav {
-      background-color: #388e3c;
-      padding: 10px;
-      text-align: center;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
-    }
-    .highlight {
-      display: flex;
-      background-color: white;
-      margin: 20px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .highlight img {
-      width: 50%;
-    }
-    .highlight .text {
-      padding: 20px;
-    }
-    .news-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-      margin: 20px;
-    }
-    .news-item {
-      background-color: white;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .news-item img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-    }
-    .news-item p {
-      padding: 10px;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #005baa;
-      color: white;
-      margin-top: 20px;
-    }
-  </style>
 </head>
-
 <body>
-  <header>
-    <h1>Мэдээллийн сайт</h1>
-    <p>Эв нэгдлийн дуу хоолойг танд хүргэнэ</p>
-  </header>
 
+<header>
+  <div class="logo">Миний Сайт</div>
   <nav>
-    <a href="#">Монголын мэдээ</a>
-    <a href="#">Дэлхийн мэдээ</a>
-    <a href="#">Орон нутгийн мэдээ</a>
-    <a href="#">Спорт</a>
+    <a href="#">Home</a>
+    <a href="#">Мэдээ</a>
+    <a href="#">Холбоо</a>
   </nav>
+  <div class="menu-btn">☰</div>
+</header>
 
-  <section class="highlight">
-    <img src="https://via.placeholder.com/400x250" alt="Main news">
-    <div class="text">
-      <h2>Онцлох мэдээний гарчиг энд байна</h2>
-      <p>Энэ хэсэгт хамгийн сүүлийн болон чухал мэдээгээ байрлуулна.</p>
-    </div>
-  </section>
+<section class="hero">
+  <h1>Онцлох мэдээ</h1>
+  <p>Энд хамгийн чухал мэдээлэл гарна</p>
+</section>
 
-  <section class="news-grid">
-    <div class="news-item">
-      <img src="https://via.placeholder.com/400x250" alt="News 1">
-      <p><strong>Мэдээ 1:</strong> Богино тайлбар энд орно.</p>
-    </div>
-    <div class="news-item">
-      <img src="https://via.placeholder.com/400x250" alt="News 2">
-      <p><strong>Мэдээ 2:</strong> Богино тайлбар энд орно.</p>
-    </div>
-    <div class="news-item">
-      <img src="https://via.placeholder.com/400x250" alt="News 3">
-      <p><strong>Мэдээ 3:</strong> Богино тайлбар энд орно.</p>
-    </div>
-  </section>
+<main>
+  <div class="news-list">
+    <article class="news-item">
+      <img src="news1.jpg" alt="Мэдээ 1">
+      <h2>Мэдээний гарчиг</h2>
+      <p>Мэдээний товч танилцуулга...</p>
+    </article>
+    <article class="news-item">
+      <img src="news2.jpg" alt="Мэдээ 2">
+      <h2>Мэдээний гарчиг</h2>
+      <p>Мэдээний товч танилцуулга...</p>
+    </article>
+  </div>
 
-  <footer>
-    <div class="contact">
-      <h2>Холбоо барих</h2>
-      <p>📞 Утас: 9434-4777</p>
-      <p>📧 И-мэйл: Redbox@gmail.mn</p>
-      <p>📍 Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
-      <p>🌐 Facebook: 
-  <a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank" class="facebook-link">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Facebook_Logo.png" 
-       alt="Facebook" width="20" style="vertical-align:middle; margin-right:5px;">
-  REDBOX
-</a>
-        
-    <p>© 2025. Бүх эрх хуулиар хамгаалагдсан.</p>
-  </footer>
+  <aside class="sidebar">
+    <h3>Онцлох мэдээ</h3>
+    <ul>
+      <li><a href="#">Мэдээ 1</a></li>
+      <li><a href="#">Мэдээ 2</a></li>
+      <li><a href="#">Мэдээ 3</a></li>
+    </ul>
+  </aside>
+</main>
+
+<footer>
+  <p>© 2025 Миний Сайт</p>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>

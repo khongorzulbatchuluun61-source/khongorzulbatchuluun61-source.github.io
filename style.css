@@ -55,6 +55,25 @@ main {
   margin-left: 20px;
 }
 
+/* Холбоо барих toggle */
+.contact-info {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background: #e0f0ff;
+  border-radius: 8px;
+}
+
+.contact-toggle {
+  cursor: pointer;
+  color: #0077cc;
+  margin: 0;
+}
+
+.contact-toggle:hover {
+  text-decoration: underline;
+}
+
 footer {
   text-align: center;
   padding: 20px;
@@ -91,4 +110,4 @@ footer {
     margin: 10px 0;
     text-align: center;
   }
-} /* <--- энд хаасан тэмдэг нэмсэн */
+}

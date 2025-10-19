@@ -1,85 +1,33 @@
-/* ----------------- Үндсэн тохиргоо ----------------- */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Poppins", "Roboto", sans-serif;
-  background: #f7f9fc;
-  color: #222;
-  line-height: 1.6;
-}
-
-/* ----------------- Header ----------------- */
-header {
+.info-board {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(90deg, #0077cc, #005fa3);
-  color: white;
-  padding: 15px 10%;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
 }
 
-header .logo {
-  font-size: 1.4rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  margin-left: 25px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-nav a:hover {
-  color: #ffcc00;
-}
-
-.menu-btn {
-  display: none;
-  font-size: 1.6rem;
-  cursor: pointer;
-}
-
-/* ----------------- Hero ----------------- */
-.hero {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("hero-image.jpg") center/cover no-repeat;
-  color: white;
+.info-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 20px;
+  width: 280px;
   text-align: center;
-  padding: 120px 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.hero h1 {
-  font-size: 2.6rem;
-  margin-bottom: 10px;
+.info-card h2 {
+  margin-top: 0;
+  color: #0077cc;
 }
 
-.hero p {
-  font-size: 1.2rem;
-  opacity: 0.9;
+.info-card a {
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-/* ----------------- Main Layout ----------------- */
-main {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 50px auto;
-  padding: 0 20px;
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
-
-/* ----------------- News Cards ----------------- */
-.news-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax

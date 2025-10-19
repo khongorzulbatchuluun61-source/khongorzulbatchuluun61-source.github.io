@@ -11,10 +11,25 @@ header h1 { margin:0; font-size:24px; }
 nav a { color:#fff; margin-left:15px; text-decoration:none; font-weight:bold; }
 
 /* Hero Carousel */
-.hero-container { position:relative; width:100%; height:300px; overflow:hidden; margin-top:0; cursor:pointer; }
+.hero-container { position:relative; width:100%; height:300px; overflow:hidden; margin-top:0; }
 .hero-slide { position:absolute; width:100%; height:100%; object-fit:cover; transition: opacity 1s ease-in-out; opacity:0; }
 .hero-slide.active { opacity:1; }
-.hero-caption { position:absolute; bottom:20px; left:20px; color:#fff; background:rgba(0,0,0,0.5); padding:10px 15px; border-radius:5px; font-size:18px; max-width:70%; }
+
+.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.5); padding:15px; border-radius:5px; color:#fff; max-width:70%; }
+.hero-overlay h3 { margin:0 0 10px; font-size:20px; }
+.hero-overlay button { background:#0077cc; border:none; color:#fff; padding:8px 12px; border-radius:4px; cursor:pointer; }
+.hero-overlay button:hover { background:#005fa3; }
+
+/* Arrows */
+.hero-arrow { position:absolute; top:50%; transform:translateY(-50%); font-size:30px; color:#fff; background:rgba(0,0,0,0.3); border:none; border-radius:50%; width:40px; height:40px; cursor:pointer; z-index:10; }
+.hero-arrow:hover { background:rgba(0,0,0,0.6); }
+.hero-arrow.left { left:10px; }
+.hero-arrow.right { right:10px; }
+
+/* Dots */
+.hero-dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; }
+.hero-dot { width:12px; height:12px; border-radius:50%; background:#fff; opacity:0.5; cursor:pointer; }
+.hero-dot.active { opacity:1; background:#0077cc; }
 
 .news-container { padding:20px; display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:15px; }
 .news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
@@ -29,12 +44,10 @@ footer { background:#333; color:#fff; text-align:center; padding:10px 0; margin-
 
 @media(max-width:768px){
   .hero-container { height:200px; }
-  header { flex-direction:column; align-items:flex-start; }
-  .hero-caption { font-size:14px; max-width:90%; }
+  .hero-overlay { max-width:90%; font-size:14px; }
 }
 </style>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
 </head>
@@ -51,14 +64,18 @@ footer { background:#333; color:#fff; text-align:center; padding:10px 0; margin-
 </header>
 
 <!-- Hero Section Carousel -->
-<div class="hero-container" id="hero-container"></div>
+<div class="hero-container" id="hero-container">
+  <button class="hero-arrow left" id="prev-slide">&#10094;</button>
+  <button class="hero-arrow right" id="next-slide">&#10095;</button>
+  <div class="hero-dots" id="hero-dots"></div>
+</div>
 
 <!-- Мэдээ нэмэх форм -->
 <div class="add-news">
 <h3>Шинэ мэдээ нэмэх</h3>
 <input type="text" id="news-title" placeholder="Гарчиг">
 <input type="text" id="news-image" placeholder="Зургийн URL (Hero-д харагдана)">
-<input type="text" id="news-url" placeholder="Мэдээний URL (Hero click-д ашиглана)">
+<input type="text" id="news-url" placeholder="Мэдээний URL (Дэлгэрэнгүй товч руу)">
 <textarea id="news-content" rows="3" placeholder="Агуулга"></textarea>
 <button id="add-news-btn">Нэмэх</button>
 </div>
@@ -86,19 +103,25 @@ const db = firebase.database();
 
 const newsContainer = document.getElementById("news-container");
 const heroContainer = document.getElementById("hero-container");
+const heroDotsContainer = document.getElementById("hero-dots");
 
 let heroSlides = [];
 let heroLinks = [];
+let heroOverlays = [];
+let currentSlideIndex = 0;
+let carouselInterval;
 
 // Firebase-аас мэдээ унших
 db.ref("news").on("value", snapshot => {
   newsContainer.innerHTML = "";
-  heroContainer.innerHTML = "";
+  heroContainer.querySelectorAll('.hero-slide, .hero-overlay').forEach(el=>el.remove());
+  heroDotsContainer.innerHTML = "";
   heroSlides = [];
   heroLinks = [];
+  heroOverlays = [];
   const data = snapshot.val();
   if(data){
-    Object.keys(data).reverse().forEach(key => {
+    Object.keys(data).reverse().forEach(key=>{
       const news = data[key];
 
       // News Card
@@ -113,13 +136,26 @@ db.ref("news").on("value", snapshot => {
         slide.src = news.image;
         slide.alt = news.title;
         slide.className = "hero-slide";
-        const caption = document.createElement("div");
-        caption.className = "hero-caption";
-        caption.textContent = news.title;
-        slide.appendChild(caption);
         heroContainer.appendChild(slide);
         heroSlides.push(slide);
         heroLinks.push(news.url || "#");
+
+        // Overlay
+        const overlay = document.createElement("div");
+        overlay.className = "hero-overlay";
+        overlay.innerHTML = `<h3>${news.title}</h3><button>Дэлгэрэнгүй</button>`;
+        overlay.querySelector("button").addEventListener("click", (e)=>{
+          e.stopPropagation();
+          if(news.url) window.open(news.url,"_blank");
+        });
+        heroContainer.appendChild(overlay);
+        heroOverlays.push(overlay);
+
+        // Dot
+        const dot = document.createElement("div");
+        dot.className = "hero-dot";
+        dot.addEventListener("click", ()=> showSlide(heroSlides.indexOf(slide)));
+        heroDotsContainer.appendChild(dot);
       }
     });
   } else {
@@ -129,42 +165,54 @@ db.ref("news").on("value", snapshot => {
 });
 
 // Мэдээ нэмэх
-document.getElementById("add-news-btn").addEventListener("click", () => {
+document.getElementById("add-news-btn").addEventListener("click", ()=>{
   const title = document.getElementById("news-title").value.trim();
   const content = document.getElementById("news-content").value.trim();
   const image = document.getElementById("news-image").value.trim();
   const url = document.getElementById("news-url").value.trim();
   if(title && content){
     db.ref("news").push({ title, content, image, url });
-    document.getElementById("news-title").value = "";
-    document.getElementById("news-content").value = "";
-    document.getElementById("news-image").value = "";
-    document.getElementById("news-url").value = "";
-  } else {
-    alert("Гарчиг болон агуулгыг бөглөнө үү!");
-  }
+    document.getElementById("news-title").value="";
+    document.getElementById("news-content").value="";
+    document.getElementById("news-image").value="";
+    document.getElementById("news-url").value="";
+  } else alert("Гарчиг болон агуулгыг бөглөнө үү!");
 });
 
-// Hero carousel
-let currentSlideIndex = 0;
-let carouselInterval;
-
+// Hero carousel functions
 function startHeroCarousel(){
-  heroSlides.forEach((s,i) => s.style.opacity = (i===0? '1':'0'));
-  currentSlideIndex = 0;
+  if(heroSlides.length===0) return;
+  heroSlides.forEach((s,i)=> s.style.opacity=i===0?'1':'0');
+  heroOverlays.forEach((o,i)=> o.style.display=i===0?'block':'none');
+  currentSlideIndex=0;
+  updateDots();
   if(carouselInterval) clearInterval(carouselInterval);
-  carouselInterval = setInterval(() => {
-    heroSlides[currentSlideIndex].style.opacity = '0';
-    currentSlideIndex = (currentSlideIndex +1) % heroSlides.length;
-    heroSlides[currentSlideIndex].style.opacity = '1';
-  }, 4000);
+  carouselInterval = setInterval(()=> nextSlide(),4000);
 }
 
-// Click-to-link functionality
-heroContainer.addEventListener("click", () => {
-  if(heroLinks.length > 0 && heroLinks[currentSlideIndex]){
-    window.open(heroLinks[currentSlideIndex], "_blank");
-  }
+function showSlide(index){
+  heroSlides[currentSlideIndex].style.opacity='0';
+  heroOverlays[currentSlideIndex].style.display='none';
+  currentSlideIndex=index;
+  heroSlides[currentSlideIndex].style.opacity='1';
+  heroOverlays[currentSlideIndex].style.display='block';
+  updateDots();
+}
+function nextSlide(){ showSlide((currentSlideIndex+1)%heroSlides.length);}
+function prevSlide(){ showSlide((currentSlideIndex-1+heroSlides.length)%heroSlides.length);}
+function updateDots(){
+  const dots = document.querySelectorAll('.hero-dot');
+  dots.forEach((d,i)=> d.classList.toggle('active',i===currentSlideIndex));
+}
+
+// Arrows
+document.getElementById('prev-slide').addEventListener('click', ()=> prevSlide());
+document.getElementById('next-slide').addEventListener('click', ()=> nextSlide());
+
+// Click-to-link on slide
+heroContainer.addEventListener('click',(e)=>{
+  if(e.target.classList.contains('hero-arrow') || e.target.classList.contains('hero-dot') || e.target.closest('.hero-overlay')) return;
+  if(heroLinks[currentSlideIndex]) window.open(heroLinks[currentSlideIndex],'_blank');
 });
 </script>
 </body>

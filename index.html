@@ -1,22 +1,146 @@
-<!-- Сайтын бүтэц / мэдээллийн карт -->
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мэдээний портал</title>
+<style>
+body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
+header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
+header h1 { margin:0; font-size:28px; }
+nav { margin-top:10px; text-align:center; }
+nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
+nav a:hover { text-decoration:underline; }
+
+/* Hero carousel */
+.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; }
+.hero-slide { width:100%; display:none; }
+.hero-slide.active { display:block; }
+.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; }
+.hero-overlay h2 { margin:0; }
+
+/* Info Board */
+.info-board { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
+.info-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:280px; text-align:center; transition:transform 0.2s, box-shadow 0.2s; }
+.info-card h2 { margin-top:0; color:#0077cc; }
+.info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
+.info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+
+/* News Section */
+.news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
+.news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.news-card h3 { margin-top:0; color:#0077cc; }
+
+/* Footer */
+footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-top:20px; }
+
+/* Mobile */
+@media(max-width:768px){ .hero-overlay { max-width:90%; font-size:14px; } .info-card { width:90%; } }
+</style>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+
+</head>
+<body>
+
+<header>
+<h1>Мэдээний портал</h1>
+<nav>
+<a href="#">Эхлэл</a>
+<a href="#">Улс төр</a>
+<a href="#">Эдийн засаг</a>
+<a href="#">Спорт</a>
+<a href="#">Нийгэм</a>
+</nav>
+</header>
+
+<!-- Hero carousel -->
+<div class="hero-container" id="hero-container"></div>
+
+<!-- Info-board -->
 <section class="info-board">
-  <!-- Онцлох мэдээ -->
-  <div class="info-card">
-    <h2>🌟 Онцлох мэдээ</h2>
-    <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
-  </div>
-
-  <!-- Холбоо барих -->
-  <div class="info-card">
-    <h2>📞 Холбоо барих</h2>
-    <p>Утас: 9434-4777</p>
-    <p>И-мэйл: <a href="mailto:Redbox@gmail.mn">Redbox@gmail.mn</a></p>
-    <p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
-  </div>
-
-  <!-- Facebook хуудас -->
-  <div class="info-card">
-    <h2>🌐 Facebook хуудас</h2>
-    <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
-  </div>
+<div class="info-card">
+<h2>🌟 Онцлох мэдээ</h2>
+<p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
+</div>
+<div class="info-card">
+<h2>📞 Холбоо барих</h2>
+<p>Утас: 9434-4777</p>
+<p>И-мэйл: <a href="mailto:Redbox@gmail.mn">Redbox@gmail.mn</a></p>
+<p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
+</div>
+<div class="info-card">
+<h2>🌐 Facebook хуудас</h2>
+<p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
+</div>
 </section>
+
+<!-- News Section -->
+<div class="news-container" id="news-container"></div>
+
+<footer>
+&copy; 2025 Мэдээний портал
+</footer>
+
+<script>
+// Firebase тохиргоо
+const firebaseConfig = {
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_PROJECT.firebaseapp.com",
+databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+projectId: "YOUR_PROJECT",
+storageBucket: "YOUR_PROJECT.appspot.com",
+messagingSenderId: "YOUR_SENDER_ID",
+appId: "YOUR_APP_ID"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const newsContainer = document.getElementById("news-container");
+const heroContainer = document.getElementById("hero-container");
+
+let slides = [];
+let currentSlide = 0;
+
+// Firebase-аас мэдээ татах
+db.ref("news").on("value", snapshot => {
+    newsContainer.innerHTML="";
+    heroContainer.innerHTML="";
+    slides=[];
+    const data = snapshot.val();
+    if(data){
+        Object.keys(data).reverse().forEach(key=>{
+            const news = data[key];
+            
+            // News Card
+            const card = document.createElement("div");
+            card.className="news-card";
+            card.innerHTML=`<h3>${news.title}</h3><p>${news.content}</p>`;
+            newsContainer.appendChild(card);
+            
+            // Hero Slide
+            if(news.image){
+                const slideDiv = document.createElement("div");
+                slideDiv.className="hero-slide";
+                slideDiv.innerHTML=`<img src="${news.image}" alt="${news.title}"><div class="hero-overlay"><h2>${news.title}</h2></div>`;
+                heroContainer.appendChild(slideDiv);
+                slides.push(slideDiv);
+            }
+        });
+        showSlide(0);
+        setInterval(()=>nextSlide(),4000);
+    }
+});
+
+function showSlide(index){
+    slides.forEach((s,i)=>s.style.display=(i===index)?"block":"none");
+    currentSlide=index;
+}
+function nextSlide(){ showSlide((currentSlide+1)%slides.length); }
+</script>
+
+</body>
+</html>

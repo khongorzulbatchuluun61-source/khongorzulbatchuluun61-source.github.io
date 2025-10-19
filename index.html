@@ -1,9 +1,55 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyD....",
-  authDomain: "news-dashboard.firebaseapp.com",
-  databaseURL: "https://news-dashboard-default-rtdb.firebaseio.com",
-  projectId: "news-dashboard",
-  storageBucket: "news-dashboard.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef"
-};
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мэдээний самбар</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; color: #333; padding: 20px; }
+    h1 { color: #0077cc; }
+    ul { list-style-type: none; padding: 0; }
+    li { background: #fff; margin: 5px 0; padding: 10px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);}
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+</head>
+<body>
+  <h1>Мэдээний самбар</h1>
+  <ul id="news-list"></ul>
+
+  <script>
+    // Firebase тохиргоо
+    const firebaseConfig = {
+      apiKey: "AIzaSyD....",
+      authDomain: "news-dashboard.firebaseapp.com",
+      databaseURL: "https://news-dashboard-default-rtdb.firebaseio.com",
+      projectId: "news-dashboard",
+      storageBucket: "news-dashboard.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1:1234567890:web:abcdef"
+    };
+
+    // Firebase эхлүүлэх
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Мэдээ унших
+    const newsList = document.getElementById("news-list");
+    db.ref("news").on("value", (snapshot) => {
+      newsList.innerHTML = "";
+      const data = snapshot.val();
+      if (data) {
+        for (let key in data) {
+          const li = document.createElement("li");
+          li.textContent = data[key].title;
+          newsList.appendChild(li);
+        }
+      } else {
+        newsList.innerHTML = "<li>Мэдээ олдсонгүй</li>";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -13,9 +13,9 @@ nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
 nav a:hover { text-decoration:underline; }
 
 /* Hero carousel */
-.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; }
-.hero-slide { width:100%; display:none; }
-.hero-slide.active { display:block; }
+.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; }
+.hero-slide { width:100%; display:none; position:relative; }
+.hero-slide img { width:100%; height:auto; display:block; border-radius:8px; }
 .hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; }
 .hero-overlay h2 { margin:0; }
 
@@ -25,6 +25,14 @@ nav a:hover { text-decoration:underline; }
 .info-card h2 { margin-top:0; color:#0077cc; }
 .info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
 .info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+
+/* Холбоо барих карт */
+.contact-card { background: #e6f0ff; border: 2px solid #0077cc; }
+.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
+.contact-card a { color: #005fa3; text-decoration: underline; }
+.contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
+.contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
+.contact-buttons .btn:hover { background: #005fa3; }
 
 /* News Section */
 .news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
@@ -61,20 +69,28 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 
 <!-- Info-board -->
 <section class="info-board">
-<div class="info-card">
-<h2>🌟 Онцлох мэдээ</h2>
-<p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
-</div>
-<div class="info-card">
-<h2>📞 Холбоо барих</h2>
-<p>Утас: 9434-4777</p>
-<p>И-мэйл: <a href="mailto:Redbox@gmail.mn">Redbox@gmail.mn</a></p>
-<p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
-</div>
-<div class="info-card">
-<h2>🌐 Facebook хуудас</h2>
-<p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
-</div>
+  <div class="info-card">
+    <h2>🌟 Онцлох мэдээ</h2>
+    <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
+  </div>
+
+  <div class="info-card contact-card">
+    <h2>📞 Холбоо барих</h2>
+    <div class="contact-info">
+      <p>Утас: <strong>9434-4777</strong></p>
+      <p>И-мэйл: <a href="mailto:Redbox@gmail.mn">Redbox@gmail.mn</a></p>
+      <p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
+    </div>
+    <div class="contact-buttons">
+      <a href="tel:94344777" class="btn">Дуудлага хийх</a>
+      <a href="mailto:Redbox@gmail.mn" class="btn">И-мэйл илгээх</a>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h2>🌐 Facebook хуудас</h2>
+    <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
+  </div>
 </section>
 
 <!-- News Section -->

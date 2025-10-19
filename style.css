@@ -1,33 +1,35 @@
-.info-board {
+.contact-card {
+  background: #e6f0ff; /* Хөнгөн цэнхэр өнгө */
+  border: 2px solid #0077cc;
+}
+
+.contact-card h2 {
+  color: #0077cc;
+  margin-bottom: 15px;
+}
+
+.contact-card a {
+  color: #005fa3;
+  text-decoration: underline;
+}
+
+.contact-buttons {
+  margin-top: 15px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  padding: 20px;
+  gap: 10px;
 }
 
-.info-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  padding: 20px;
-  width: 280px;
-  text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.info-card h2 {
-  margin-top: 0;
-  color: #0077cc;
-}
-
-.info-card a {
-  color: #0077cc;
+.contact-buttons .btn {
+  display: inline-block;
+  padding: 8px 12px;
+  background: #0077cc;
+  color: #fff;
+  border-radius: 5px;
   text-decoration: none;
   font-weight: bold;
 }
 
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+.contact-buttons .btn:hover {
+  background: #005fa3;
 }

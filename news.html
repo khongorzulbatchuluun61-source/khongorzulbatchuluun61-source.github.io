@@ -1,57 +1,129 @@
 <!DOCTYPE html>
 <html lang="mn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Мэдээний сайт</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мэдээний портал</title>
+<style>
+body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
+header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
+header h1 { margin:0; font-size:28px; }
+nav { margin-top:10px; text-align:center; }
+nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
+nav a:hover { text-decoration:underline; }
+
+/* Hero carousel */
+.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; }
+.hero-slide { width:100%; display:none; position:relative; }
+.hero-slide img { width:100%; height:auto; display:block; border-radius:8px; }
+.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; }
+.hero-overlay h2 { margin:0; }
+
+/* Info Board */
+.info-board { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
+.info-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:280px; text-align:center; transition:transform 0.2s, box-shadow 0.2s; }
+.info-card h2 { margin-top:0; color:#0077cc; }
+.info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
+.info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
+
+/* Холбоо барих карт */
+.contact-card { background: #e6f0ff; border: 2px solid #0077cc; }
+.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
+.contact-card a { color: #005fa3; text-decoration: underline; }
+.contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
+.contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
+.contact-buttons .btn:hover { background: #005fa3; }
+
+/* News Section */
+.news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
+.news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.news-card h3 { margin-top:0; color:#0077cc; }
+
+/* Footer */
+footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-top:20px; }
+
+/* Mobile */
+@media(max-width:768px){ .hero-overlay { max-width:90%; font-size:14px; } .info-card { width:90%; } }
+</style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="logo">Миний Сайт</div>
-    <nav>
-      <a href="index.html">Нүүр</a>
-      <a href="newpage.html">Шинэ Хуудас</a>
-    </nav>
-  </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Сайн байна уу!</h1>
-    <p>Манай сайтад тавтай морилно уу.</p>
-  </section>
+<header>
+<h1>Мэдээний портал</h1>
+<nav>
+<a href="#">Эхлэл</a>
+<a href="#">Улс төр</a>
+<a href="#">Эдийн засаг</a>
+<a href="#">Спорт</a>
+<a href="#">Нийгэм</a>
+</nav>
+</header>
 
-  <!-- Main News Section -->
-  <main class="news-list">
-    <!-- Мэдээ 1: Зурагтай -->
-    <article class="news-item">
-      <img src="news1.jpg" alt="Мэдээний зураг">
-      <h2>Мэдээ 1: Шинэ мэдээлэл</h2>
-      <p>Энэ бол мэдээний текст. Та хүсвэл тайлбар болон холбоос оруулж болно.</p>
-    </article>
+<!-- Hero carousel -->
+<div class="hero-container" id="hero-container">
+  <div class="hero-slide active">
+    <img src="https://via.placeholder.com/900x400.png?text=Мэдээ+1" alt="Мэдээ 1">
+    <div class="hero-overlay"><h2>Монгол Улсын шинэ хуулийн төсөл батлагдав</h2></div>
+  </div>
+  <div class="hero-slide">
+    <img src="https://via.placeholder.com/900x400.png?text=Мэдээ+2" alt="Мэдээ 2">
+    <div class="hero-overlay"><h2>Эдийн засгийн өсөлт 5%-д хүрлээ</h2></div>
+  </div>
+  <div class="hero-slide">
+    <img src="https://via.placeholder.com/900x400.png?text=Мэдээ+3" alt="Мэдээ 3">
+    <div class="hero-overlay"><h2>Спортын наадам амжилттай болж өнгөрлөө</h2></div>
+  </div>
+</div>
 
-    <!-- Мэдээ 2: Видео бүхий -->
-    <article class="news-item">
-      <h2>Мэдээ 2: Видео мэдээлэл</h2>
-      <video width="100%" height="auto" controls>
-        <source src="https://raw.githubusercontent.com/username/repo/main/video.mp4" type="video/mp4">
-        Таны браузер видео дэмжихгүй байна.
-      </video>
-      <p>Энэ бол мэдээний видео тайлбар. Видео нь мэдээг илүү сонирхолтой болгоно.</p>
-    </article>
+<!-- Info-board -->
+<section class="info-board">
+  <div class="info-card">
+    <h2>🌟 Онцлох мэдээ</h2>
+    <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
+  </div>
 
-    <!-- Мэдээ 3: Зураг + текст -->
-    <article class="news-item">
-      <img src="news2.jpg" alt="Мэдээний зураг">
-      <h2>Мэдээ 3: Дэлгэрэнгүй мэдээлэл</h2>
-      <p>Энэ мэдээ нь нэмэлт мэдээллийг агуулна. Холбоос, зураг, видео оруулах боломжтой.</p>
-    </article>
-  </main>
+  <div class="info-card contact-card">
+    <h2>📞 Холбоо барих</h2>
+    <div class="contact-info">
+      <p>Утас: <strong>9434-4777</strong></p>
+      <p>И-мэйл: <a href="mailto:Redbox@gmail.mn">Redbox@gmail.mn</a></p>
+      <p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
+    </div>
+    <div class="contact-buttons">
+      <a href="tel:94344777" class="btn">Дуудлага хийх</a>
+      <a href="mailto:Redbox@gmail.mn" class="btn">И-мэйл илгээх</a>
+    </div>
+  </div>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025. Миний Сайт</p>
-  </footer>
+  <div class="info-card">
+    <h2>🌐 Facebook хуудас</h2>
+    <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
+  </div>
+</section>
+
+<!-- News Section -->
+<div class="news-container">
+  <div class="news-card"><h3>Монгол Улсын шинэ хуулийн төсөл батлагдав</h3><p>Шинэ хуулийн төсөл Улсын Их Хурлаар батлагдлаа...</p></div>
+  <div class="news-card"><h3>Эдийн засгийн өсөлт 5%-д хүрлээ</h3><p>Сүүлийн тайлангаас үзэхэд эдийн засгийн өсөлт 5%-д хүрсэн байна...</p></div>
+  <div class="news-card"><h3>Спортын наадам амжилттай болж өнгөрлөө</h3><p>Хотын спортын наадамд 1000 гаруй тамирчин оролцлоо...</p></div>
+</div>
+
+<footer>
+&copy; 2025 Мэдээний портал
+</footer>
+
+<script>
+// Hero carousel
+let slides = document.querySelectorAll('.hero-slide');
+let currentSlide = 0;
+function showSlide(index){
+  slides.forEach((s,i)=>s.style.display=(i===index)?"block":"none");
+  currentSlide=index;
+}
+function nextSlide(){ showSlide((currentSlide+1)%slides.length); }
+setInterval(nextSlide,4000);
+showSlide(0);
+</script>
+
 </body>
 </html>

@@ -26,25 +26,29 @@ nav a:hover { text-decoration:underline; }
 .info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
 .info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
 
-/* Contact Card */
-.contact-card { background: #e6f0ff; border: 2px solid #0077cc; }
-.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
-.contact-card a { color: #005fa3; text-decoration: underline; }
-.contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-.contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
-.contact-buttons .btn:hover { background: #005fa3; }
-
 /* News Section */
 .news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
 .news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
 .news-card h3 { margin-top:0; color:#0077cc; }
 .news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
 
+/* Contact Card */
+.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; }
+.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
+.contact-card a { color: #005fa3; text-decoration: underline; }
+.contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
+.contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
+.contact-buttons .btn:hover { background: #005fa3; }
+
 /* Footer */
 footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-top:20px; }
 
 /* Mobile */
-@media(max-width:768px){ .hero-overlay { max-width:90%; font-size:14px; } .info-card { width:90%; } }
+@media(max-width:768px){ 
+  .hero-overlay { max-width:90%; font-size:14px; } 
+  .info-card { width:90%; } 
+  .contact-card { width:90%; }
+}
 </style>
 </head>
 <body>
@@ -70,19 +74,6 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
     <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
   </div>
 
-  <div class="info-card contact-card">
-    <h2>📞 Холбоо барих</h2>
-    <div class="contact-info">
-      <p>Утас: <strong>9434-4777</strong></p>
-      <p>И-мэйл: <a href="mailto:Redbox@gmail.mn">Redbox@gmail.mn</a></p>
-      <p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
-    </div>
-    <div class="contact-buttons">
-      <a href="tel:94344777" class="btn">Дуудлага хийх</a>
-      <a href="mailto:Redbox@gmail.mn" class="btn">И-мэйл илгээх</a>
-    </div>
-  </div>
-
   <div class="info-card">
     <h2>🌐 Facebook хуудас</h2>
     <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
@@ -91,6 +82,20 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 
 <!-- News Section -->
 <div class="news-container" id="news-container"></div>
+
+<!-- Contact Card: Footer-д ойролцоо, full-width -->
+<div class="contact-card">
+  <h2>📞 Холбоо барих</h2>
+  <div class="contact-info" style="text-align:center;">
+    <p>Утас: <strong>9900-1234</strong></p>
+    <p>И-мэйл: <a href="mailto:example@domain.com">example@domain.com</a></p>
+    <p>Хаяг: Улаанбаатар хот, Сүхбаатар дүүрэг</p>
+  </div>
+  <div class="contact-buttons" style="justify-content:center;">
+    <a href="tel:99001234" class="btn">Дуудлага хийх</a>
+    <a href="mailto:example@domain.com" class="btn">И-мэйл илгээх</a>
+  </div>
+</div>
 
 <footer>
 &copy; 2025 Мэдээний портал
@@ -132,6 +137,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
       Object.keys(data).reverse().forEach(key => {
         const news = data[key];
 
+        // News card
         const card = document.createElement("div");
         card.className = "news-card";
         card.innerHTML = `
@@ -142,6 +148,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
         `;
         newsContainer.appendChild(card);
 
+        // Hero slide
         if (news.image) {
           const slideDiv = document.createElement("div");
           slideDiv.className = "hero-slide";

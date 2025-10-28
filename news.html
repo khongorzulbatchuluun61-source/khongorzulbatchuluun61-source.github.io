@@ -3,71 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Мэдээний дэлгэрэнгүй</title>
+<title>Мэдээний жагсаалт</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  color: #333;
-}
-header {
-  background: #0077cc;
-  color: white;
-  text-align: center;
-  padding: 15px;
-}
-header a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: bold;
-}
-.article {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.article img {
-  width: 100%;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-.article h1 {
-  color: #0077cc;
-  margin-bottom: 10px;
-}
-.article small {
-  color: #777;
-}
-footer {
-  text-align: center;
-  padding: 15px 0;
-  background: #333;
-  color: #fff;
-  margin-top: 40px;
-}
+  body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
+  header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
+  h1 { margin:0; }
+  main { max-width:1000px; margin:20px auto; padding:0 20px; }
+  .news-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; }
+  .news-card { background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1); display:flex; flex-direction:column; }
+  .news-card img { width:100%; height:160px; object-fit:cover; }
+  .news-card-content { padding:15px; flex:1; display:flex; flex-direction:column; }
+  .news-card-content h3 { margin:0 0 10px 0; font-size:18px; color:#0077cc; }
+  .news-card-content p { flex:1; font-size:14px; color:#333; margin:0 0 10px 0; }
+  .news-card-content span { font-size:12px; color:#666; }
 </style>
 </head>
 <body>
 
 <header>
-  <a href="index.html">← Буцах</a>
-  <h1>Мэдээний дэлгэрэнгүй</h1>
+  <h1>Сүүлийн мэдээ</h1>
 </header>
 
-<div class="article" id="article"></div>
-
-<footer>
-  &copy; 2025 REDBOX
-</footer>
+<main>
+  <div class="news-container" id="news-container">
+    <!-- Мэдээ Firebase-аас ирнэ -->
+  </div>
+</main>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
+  // Firebase тохиргоо
   const firebaseConfig = {
     apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
     authDomain: "khongorzul-news.firebaseapp.com",
@@ -82,30 +49,30 @@ footer {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  const article = document.getElementById("article");
+  const newsContainer = document.getElementById("news-container");
+  const newsRef = ref(db, "news");
 
-  // URL-аас ID авах
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
-
-  if (id) {
-    const newsRef = ref(db, "news/" + id);
-    get(newsRef).then(snapshot => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        article.innerHTML = `
-          ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ""}
-          <h1>${data.title}</h1>
-          <small>${data.date || ""} • ${data.category || ""}</small>
-          <p style="margin-top:20px;">${data.fulltext || data.description || ""}</p>
-        `;
-      } else {
-        article.innerHTML = "<p>⚠️ Уг мэдээ олдсонгүй.</p>";
-      }
-    });
-  } else {
-    article.innerHTML = "<p>⚠️ Мэдээний ID дамжуулагдаагүй байна.</p>";
-  }
+  onValue(newsRef, (snapshot) => {
+    newsContainer.innerHTML = "";
+    const data = snapshot.val();
+    if (data) {
+      Object.keys(data).sort((a,b) => new Date(data[b].date) - new Date(data[a].date))
+        .forEach(key => {
+          const news = data[key];
+          const div = document.createElement("div");
+          div.classList.add("news-card");
+          div.innerHTML = `
+            <img src="${news.image}" alt="${news.title}">
+            <div class="news-card-content">
+              <h3>${news.title}</h3>
+              <p>${news.description}</p>
+              <span>${news.category} | ${news.date}</span>
+            </div>
+          `;
+          newsContainer.appendChild(div);
+        });
+    }
+  });
 </script>
 
 </body>

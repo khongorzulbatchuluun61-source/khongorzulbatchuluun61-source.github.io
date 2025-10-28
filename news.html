@@ -3,125 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Мэдээ удирдах | Админ</title>
+<title>Мэдээ оруулах</title>
 <style>
-body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
-header { background:#0077cc; color:#fff; text-align:center; padding:20px 0; }
-h1 { margin:0; }
-.container { max-width:900px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-.news-item { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #ccc; padding:10px 0; }
-.news-item img { width:100px; height:60px; object-fit:cover; margin-right:10px; }
-.news-details { flex:1; }
-.news-actions button { margin-left:5px; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; }
-.news-actions .edit { background:#ffc107; color:#fff; }
-.news-actions .delete { background:#dc3545; color:#fff; }
-.success { color: green; margin-top: 15px; font-weight:bold; }
-.error { color: red; margin-top: 15px; font-weight:bold; }
+body { font-family: Arial, sans-serif; padding:20px; background:#f4f4f4; }
+form { background:#fff; padding:20px; border-radius:8px; max-width:500px; margin:auto; }
+input, textarea { width:100%; margin-bottom:15px; padding:8px; border-radius:4px; border:1px solid #ccc; }
+button { padding:10px 15px; background:#0077cc; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+button:hover { background:#005fa3; }
 </style>
 </head>
 <body>
 
-<header>
-<h1>Мэдээ удирдах | Админ</h1>
-</header>
-
-<div class="container">
-<div id="newsList"></div>
-<div class="success" id="successMsg"></div>
-<div class="error" id="errorMsg"></div>
-</div>
+<h1>Мэдээ оруулах</h1>
+<form id="newsForm">
+  <input type="text" id="title" placeholder="Гарчиг" required>
+  <textarea id="description" placeholder="Тайлбар" rows="5" required></textarea>
+  <input type="text" id="category" placeholder="Ангилал" required>
+  <input type="file" id="image" accept="image/*" required>
+  <button type="submit">Нэмэх</button>
+</form>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-import { getStorage, ref as sRef, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
-// Firebase тохиргоо
 const firebaseConfig = {
-  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
-  authDomain: "khongorzul-news.firebaseapp.com",
-  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "khongorzul-news",
-  storageBucket: "khongorzul-news.appspot.com",
-  messagingSenderId: "489440213839",
-  appId: "1:489440213839:web:b11ae043901031220a633a",
-  measurementId: "G-BJKJVZYKLL"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  databaseURL: "YOUR_DB_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-const newsList = document.getElementById("newsList");
-const successMsg = document.getElementById("successMsg");
-const errorMsg = document.getElementById("errorMsg");
+const form = document.getElementById('newsForm');
 
-function fetchNews() {
-  const newsRef = ref(db, 'news');
-  onValue(newsRef, (snapshot) => {
-    newsList.innerHTML = '';
-    snapshot.forEach((childSnapshot) => {
-      const key = childSnapshot.key;
-      const news = childSnapshot.val();
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      const div = document.createElement('div');
-      div.classList.add('news-item');
-      div.innerHTML = `
-        <img src="${news.image}" alt="${news.title}">
-        <div class="news-details">
-          <strong>${news.title}</strong><br>
-          ${news.description}<br>
-          <em>${news.category}</em>
-        </div>
-        <div class="news-actions">
-          <button class="edit" onclick="editNews('${key}', '${news.title}', '${news.description}', '${news.category}')">Засах</button>
-          <button class="delete" onclick="deleteNews('${key}', '${news.image}')">Устгах</button>
-        </div>
-      `;
-      newsList.appendChild(div);
-    });
+  const title = document.getElementById('title').value;
+  const description = document.getElementById('description').value;
+  const category = document.getElementById('category').value;
+  const imageFile = document.getElementById('image').files[0];
+
+  if (!imageFile) return alert("Зургаа сонгоно уу!");
+
+  // Firebase Storage-д зураг байрлуулах
+  const storageRef = sRef(storage, 'news/' + imageFile.name);
+  await uploadBytes(storageRef, imageFile);
+  const imageUrl = await getDownloadURL(storageRef);
+
+  // Firebase Database-д мэдээ нэмэх
+  const newsRef = push(ref(db, 'news'));
+  await set(newsRef, {
+    title,
+    description,
+    category,
+    image: imageUrl,
+    date: new Date().toLocaleString()
   });
-}
 
-// Мэдээ устгах
-window.deleteNews = async (key, imageUrl) => {
-  successMsg.textContent = "";
-  errorMsg.textContent = "";
-  try {
-    // Storage-с зураг устгах
-    const imageRef = sRef(storage, imageUrl);
-    await deleteObject(imageRef).catch(() => {});
-    // Database-с устгах
-    await remove(ref(db, 'news/' + key));
-    successMsg.textContent = "Мэдээ амжилттай устлаа!";
-  } catch (error) {
-    console.error(error);
-    errorMsg.textContent = "Алдаа гарлаа. Дахин оролдоно уу!";
-  }
-};
-
-// Мэдээ засах
-window.editNews = (key, oldTitle, oldDesc, oldCategory) => {
-  const newTitle = prompt("Гарчиг шинэчлэх:", oldTitle);
-  if (!newTitle) return;
-  const newDesc = prompt("Тайлбар шинэчлэх:", oldDesc);
-  if (!newDesc) return;
-  const newCategory = prompt("Ангилал шинэчлэх:", oldCategory);
-  if (!newCategory) return;
-
-  update(ref(db, 'news/' + key), {
-    title: newTitle,
-    description: newDesc,
-    category: newCategory
-  }).then(() => {
-    successMsg.textContent = "Мэдээ амжилттай шинэчлэгдлээ!";
-  }).catch((err) => {
-    console.error(err);
-    errorMsg.textContent = "Алдаа гарлаа. Дахин оролдоно уу!";
-  });
-};
-
-fetchNews();
+  alert("Мэдээ амжилттай нэмэгдлээ!");
+  form.reset();
+});
 </script>
 
 </body>

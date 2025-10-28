@@ -3,76 +3,125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Мэдээний жагсаалт</title>
+<title>Мэдээ удирдах | Админ</title>
 <style>
-  body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; }
-  header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
-  h1 { margin:0; }
-  main { max-width:1000px; margin:20px auto; padding:0 20px; }
-  .news-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px; }
-  .news-card { background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.1); display:flex; flex-direction:column; }
-  .news-card img { width:100%; height:160px; object-fit:cover; }
-  .news-card-content { padding:15px; flex:1; display:flex; flex-direction:column; }
-  .news-card-content h3 { margin:0 0 10px 0; font-size:18px; color:#0077cc; }
-  .news-card-content p { flex:1; font-size:14px; color:#333; margin:0 0 10px 0; }
-  .news-card-content span { font-size:12px; color:#666; }
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin:0; padding:0; }
+header { background:#0077cc; color:#fff; text-align:center; padding:20px 0; }
+h1 { margin:0; }
+.container { max-width:900px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+.news-item { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #ccc; padding:10px 0; }
+.news-item img { width:100px; height:60px; object-fit:cover; margin-right:10px; }
+.news-details { flex:1; }
+.news-actions button { margin-left:5px; padding:5px 10px; border:none; border-radius:5px; cursor:pointer; }
+.news-actions .edit { background:#ffc107; color:#fff; }
+.news-actions .delete { background:#dc3545; color:#fff; }
+.success { color: green; margin-top: 15px; font-weight:bold; }
+.error { color: red; margin-top: 15px; font-weight:bold; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Сүүлийн мэдээ</h1>
+<h1>Мэдээ удирдах | Админ</h1>
 </header>
 
-<main>
-  <div class="news-container" id="news-container">
-    <!-- Мэдээ Firebase-аас ирнэ -->
-  </div>
-</main>
+<div class="container">
+<div id="newsList"></div>
+<div class="success" id="successMsg"></div>
+<div class="error" id="errorMsg"></div>
+</div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getStorage, ref as sRef, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
-  // Firebase тохиргоо
-  const firebaseConfig = {
-    apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
-    authDomain: "khongorzul-news.firebaseapp.com",
-    databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "khongorzul-news",
-    storageBucket: "khongorzul-news.firebasestorage.app",
-    messagingSenderId: "489440213839",
-    appId: "1:489440213839:web:b11ae043901031220a633a",
-    measurementId: "G-BJKJVZYKLL"
-  };
+// Firebase тохиргоо
+const firebaseConfig = {
+  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
+  authDomain: "khongorzul-news.firebaseapp.com",
+  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "khongorzul-news",
+  storageBucket: "khongorzul-news.appspot.com",
+  messagingSenderId: "489440213839",
+  appId: "1:489440213839:web:b11ae043901031220a633a",
+  measurementId: "G-BJKJVZYKLL"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
 
-  const newsContainer = document.getElementById("news-container");
-  const newsRef = ref(db, "news");
+const newsList = document.getElementById("newsList");
+const successMsg = document.getElementById("successMsg");
+const errorMsg = document.getElementById("errorMsg");
 
+function fetchNews() {
+  const newsRef = ref(db, 'news');
   onValue(newsRef, (snapshot) => {
-    newsContainer.innerHTML = "";
-    const data = snapshot.val();
-    if (data) {
-      Object.keys(data).sort((a,b) => new Date(data[b].date) - new Date(data[a].date))
-        .forEach(key => {
-          const news = data[key];
-          const div = document.createElement("div");
-          div.classList.add("news-card");
-          div.innerHTML = `
-            <img src="${news.image}" alt="${news.title}">
-            <div class="news-card-content">
-              <h3>${news.title}</h3>
-              <p>${news.description}</p>
-              <span>${news.category} | ${news.date}</span>
-            </div>
-          `;
-          newsContainer.appendChild(div);
-        });
-    }
+    newsList.innerHTML = '';
+    snapshot.forEach((childSnapshot) => {
+      const key = childSnapshot.key;
+      const news = childSnapshot.val();
+
+      const div = document.createElement('div');
+      div.classList.add('news-item');
+      div.innerHTML = `
+        <img src="${news.image}" alt="${news.title}">
+        <div class="news-details">
+          <strong>${news.title}</strong><br>
+          ${news.description}<br>
+          <em>${news.category}</em>
+        </div>
+        <div class="news-actions">
+          <button class="edit" onclick="editNews('${key}', '${news.title}', '${news.description}', '${news.category}')">Засах</button>
+          <button class="delete" onclick="deleteNews('${key}', '${news.image}')">Устгах</button>
+        </div>
+      `;
+      newsList.appendChild(div);
+    });
   });
+}
+
+// Мэдээ устгах
+window.deleteNews = async (key, imageUrl) => {
+  successMsg.textContent = "";
+  errorMsg.textContent = "";
+  try {
+    // Storage-с зураг устгах
+    const imageRef = sRef(storage, imageUrl);
+    await deleteObject(imageRef).catch(() => {});
+    // Database-с устгах
+    await remove(ref(db, 'news/' + key));
+    successMsg.textContent = "Мэдээ амжилттай устлаа!";
+  } catch (error) {
+    console.error(error);
+    errorMsg.textContent = "Алдаа гарлаа. Дахин оролдоно уу!";
+  }
+};
+
+// Мэдээ засах
+window.editNews = (key, oldTitle, oldDesc, oldCategory) => {
+  const newTitle = prompt("Гарчиг шинэчлэх:", oldTitle);
+  if (!newTitle) return;
+  const newDesc = prompt("Тайлбар шинэчлэх:", oldDesc);
+  if (!newDesc) return;
+  const newCategory = prompt("Ангилал шинэчлэх:", oldCategory);
+  if (!newCategory) return;
+
+  update(ref(db, 'news/' + key), {
+    title: newTitle,
+    description: newDesc,
+    category: newCategory
+  }).then(() => {
+    successMsg.textContent = "Мэдээ амжилттай шинэчлэгдлээ!";
+  }).catch((err) => {
+    console.error(err);
+    errorMsg.textContent = "Алдаа гарлаа. Дахин оролдоно уу!";
+  });
+};
+
+fetchNews();
 </script>
 
 </body>

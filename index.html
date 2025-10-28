@@ -3,340 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Админ - Мэдээ нэмэх</title>
+<title>Админ - Мэдээ оруулах</title>
 <style>
-body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
-h1 { color:#0077cc; text-align:center; }
-form { max-width:500px; margin:0 auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-form label { display:block; margin-top:15px; font-weight:bold; }
-form input[type="text"], form textarea, form select { width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
-form input[type="file"] { margin-top:5px; }
-form button { margin-top:20px; padding:10px 15px; background:#0077cc; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
-form button:hover { background:#005fa3; }
-img#preview { margin-top:10px; max-width:100%; border-radius:5px; }
-.success { color: green; text-align:center; margin-top:15px; }
-.error { color: red; text-align:center; margin-top:15px; }
-</style>
-</head>
-<body>
-
-<h1>🟢 Мэдээ нэмэх</h1>
-
-<form id="newsForm">
-  <label for="title">Гарчиг:</label>
-  <input type="text" id="title" required>
-
-  <label for="description">Товч тайлбар:</label>
-  <textarea id="description" rows="2" required></textarea>
-
-  <label for="fulltext">Дэлгэрэнгүй текст:</label>
-  <textarea id="fulltext" rows="5" required></textarea>
-
-  <label for="category">Категори сонгох:</label>
-  <select id="category" required>
-    <option value="">Сонгоно уу</option>
-    <option value="Ерөнхий">Ерөнхий</option>
-    <option value="Технологи">Технологи</option>
-    <option value="Спорт">Спорт</option>
-    <option value="Соёл">Соёл</option>
-  </select>
-
-  <label for="image">Зураг сонгох:</label>
-  <input type="file" id="image" accept="image/*" required>
-  <img id="preview" src="" alt="Урьдчилан харах зураг" style="display:none;">
-
-  <button type="submit">Мэдээ нэмэх</button>
-</form>
-
-<p class="success" id="successMsg"></p>
-<p class="error" id="errorMsg"></p>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
-
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
-  authDomain: "khongorzul-news.firebaseapp.com",
-  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "khongorzul-news",
-  storageBucket: "khongorzul-news.firebasestorage.app",
-  messagingSenderId: "489440213839",
-  appId: "1:489440213839:web:b11ae043901031220a633a",
-  measurementId: "G-BJKJVZYKLL"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const storage = getStorage(app);
-
-const form = document.getElementById("newsForm");
-const successMsg = document.getElementById("successMsg");
-const errorMsg = document.getElementById("errorMsg");
-const imageInput = document.getElementById("image");
-const preview = document.getElementById("preview");
-
-// Урьдчилан харах зураг
-imageInput.addEventListener("change", () => {
-  const file = imageInput.files[0];
-  if (file) {
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-  } else {
-    preview.style.display = "none";
-  }
-});
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  successMsg.textContent = "";
-  errorMsg.textContent = "";
-
-  const title = document.getElementById("title").value.trim();
-  const description = document.getElementById("description").value.trim();
-  const fulltext = document.getElementById("fulltext").value.trim();
-  const category = document.getElementById("category").value;
-  const imageFile = imageInput.files[0];
-
-  if (!title || !description || !fulltext || !category || !imageFile) {
-    errorMsg.textContent = "Бүх талбарыг бөглөнө үү!";
-    return;
-  }
-
-  try {
-    // 1️⃣ Зураг байршуулж URL авах
-    const imageRef = sRef(storage, `news_images/${Date.now()}_${imageFile.name}`);
-    await uploadBytes(imageRef, imageFile);
-    const imageUrl = await getDownloadURL(imageRef);
-
-    // 2️⃣ Мэдээний объект үүсгэх
-    const newsRef = ref(db, "news");
-    const newNewsRef = push(newsRef);
-    const newsData = {
-      title,
-      description,
-      fulltext,
-      category,
-      image: imageUrl,
-      date: new Date().toISOString().split('T')[0]
-    };
-
-    // 3️⃣ Firebase Database-д хадгалах
-    await set(newNewsRef, newsData);
-
-    successMsg.textContent = "Мэдээ амжилттай нэмэгдлээ!";
-    form.reset();
-    preview.style.display = "none";
-  } catch (err) {
-    console.error(err);
-    errorMsg.textContent = "Алдаа гарлаа: " + err.message;
-  }
-});
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="mn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Мэдээний портал</title>
-<style>
-body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
-header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
-header h1 { margin:0; font-size:28px; }
-nav { margin-top:10px; text-align:center; }
-nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
-nav a:hover { text-decoration:underline; }
-
-/* Hero carousel */
-.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; }
-.hero-slide { width:100%; display:none; position:relative; }
-.hero-slide img { width:100%; height:auto; display:block; border-radius:8px; }
-.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; }
-.hero-overlay h2 { margin:0; }
-
-/* Info Board */
-.info-board { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
-.info-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:280px; text-align:center; transition:transform 0.2s, box-shadow 0.2s; }
-.info-card h2 { margin-top:0; color:#0077cc; }
-.info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
-.info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
-
-/* News Section */
-.news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
-.news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); position:relative; }
-.news-card h3 { margin-top:0; color:#0077cc; }
-.news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
-.news-card .fulltext { display:none; margin-top:10px; }
-
-/* Read more link */
-.read-more { display:inline-block; margin-top:10px; color:#0077cc; text-decoration:none; font-weight:bold; cursor:pointer; }
-.read-more:hover { text-decoration:underline; }
-
-/* Contact Card */
-.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; }
-.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
-.contact-card a { color: #005fa3; text-decoration: underline; }
-.contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-.contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
-.contact-buttons .btn:hover { background: #005fa3; }
-
-/* Footer */
-footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-top:20px; }
-
-/* Mobile */
-@media(max-width:768px){ 
-  .hero-overlay { max-width:90%; font-size:14px; } 
-  .info-card { width:90%; } 
-  .contact-card { width:90%; }
-}
+  body { font-family: Arial, sans-serif; margin:0; background:#f4f4f4; color:#333; }
+  header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
+  h1 { margin:0; font-size:28px; }
+  main { max-width:900px; margin:20px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+  form { display:flex; flex-direction:column; gap:15px; }
+  input, textarea { padding:10px; font-size:14px; border-radius:5px; border:1px solid #ccc; width:100%; box-sizing:border-box; }
+  button { padding:10px; background:#0077cc; color:#fff; border:none; border-radius:5px; font-weight:bold; cursor:pointer; }
+  button:hover { background:#005fa3; }
+  table { width:100%; border-collapse:collapse; margin-top:20px; }
+  th, td { border:1px solid #ccc; padding:8px; text-align:left; }
+  th { background:#0077cc; color:#fff; }
+  .btn { padding:5px 10px; border:none; border-radius:5px; cursor:pointer; color:#fff; font-weight:bold; }
+  .edit-btn { background:#ffa500; }
+  .delete-btn { background:#ff4444; }
 </style>
 </head>
 <body>
 
 <header>
-<h1>Redbox</h1>
-<nav>
-<a href="#">Эхлэл</a>
-<a href="#">Соёл урлаг</a>
-<a href="#">Эдийн засаг</a>
-<a href="#">Спорт</a>
-<a href="#">Нийгэм</a>
-</nav>
+  <h1>Админ - Мэдээ удирдах</h1>
 </header>
 
-<!-- Hero carousel -->
-<div class="hero-container" id="hero-container"></div>
+<main>
+  <h2>Мэдээ нэмэх</h2>
+  <form id="news-form">
+    <input type="text" id="title" placeholder="Гарчиг" required>
+    <textarea id="description" placeholder="Мэдээний текст" rows="4" required></textarea>
+    <input type="text" id="image" placeholder="Зургийн URL" required>
+    <input type="text" id="category" placeholder="Ангилал (Соёл, Спорт гэх мэт)" required>
+    <input type="date" id="date" required>
+    <button type="submit">Нэмэх</button>
+  </form>
 
-<!-- Info-board -->
-<section class="info-board">
-  <div class="info-card">
-    <h2>🌟 Онцлох мэдээ</h2>
-    <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
-  </div>
-  <div class="info-card">
-    <h2>🌐 Facebook хуудас</h2>
-    <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
-  </div>
-</section>
+  <h2>Мэдээний жагсаалт</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Гарчиг</th>
+        <th>Ангилал</th>
+        <th>Огноо</th>
+        <th>Засах</th>
+        <th>Устгах</th>
+      </tr>
+    </thead>
+    <tbody id="news-list">
+      <!-- Мэдээ Firebase-аас ирнэ -->
+    </tbody>
+  </table>
+</main>
 
-<!-- News Section -->
-<div class="news-container" id="news-container"></div>
-
-<!-- Contact Card -->
-<div class="contact-card">
-  <h2>📞 Холбоо барих</h2>
-  <div class="contact-info" style="text-align:center;">
-    <p>Утас: <strong>94344777</strong></p>
-    <p>И-мэйл: <a href="mailto:redbox@gmail.com">redbox@gmail.com</a></p>
-    <p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
-    <p>Facebook: <a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX</a></p>
-  </div>
-  <div class="contact-buttons" style="justify-content:center;">
-    <a href="tel:94344777" class="btn">Дуудлага хийх</a>
-    <a href="mailto:redbox@gmail.com" class="btn">И-мэйл илгээх</a>
-  </div>
-</div>
-
-<footer>
-&copy; 2025 Мэдээний портал
-</footer>
-
-<!-- Firebase integration -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
-  authDomain: "khongorzul-news.firebaseapp.com",
-  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "khongorzul-news",
-  storageBucket: "khongorzul-news.firebasestorage.app",
-  messagingSenderId: "489440213839",
-  appId: "1:489440213839:web:b11ae043901031220a633a",
-  measurementId: "G-BJKJVZYKLL"
-};
+  // Firebase тохиргоо
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
+    authDomain: "khongorzul-news.firebaseapp.com",
+    databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "khongorzul-news",
+    storageBucket: "khongorzul-news.firebasestorage.app",
+    messagingSenderId: "489440213839",
+    appId: "1:489440213839:web:b11ae043901031220a633a",
+    measurementId: "G-BJKJVZYKLL"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-const newsContainer = document.getElementById("news-container");
-const heroContainer = document.getElementById("hero-container");
+  const newsForm = document.getElementById("news-form");
+  const newsList = document.getElementById("news-list");
 
-let slides = [];
-let currentSlide = 0;
+  let editingKey = null;
 
-const newsRef = ref(db, "news");
-onValue(newsRef, (snapshot) => {
-  newsContainer.innerHTML = "";
-  heroContainer.innerHTML = "";
-  slides = [];
-  const data = snapshot.val();
+  // Мэдээ нэмэх / засах
+  newsForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const image = document.getElementById("image").value.trim();
+    const category = document.getElementById("category").value.trim();
+    const date = document.getElementById("date").value;
 
-  if (data) {
-    Object.keys(data).reverse().forEach(key => {
-      const news = data[key];
+    if (!title || !description || !image || !category || !date) return alert("Бүх талбарыг бөглөнө үү");
 
-      // News card
-      const card = document.createElement("div");
-      card.className = "news-card";
-      card.innerHTML = `
-        ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
-        <h3>${news.title}</h3>
-        <p>${news.description || ""}</p>
-        <div class="fulltext"><p>${news.fulltext || ""}</p></div>
-        <a href="#" class="read-more">Дэлгэрэнгүй унших →</a>
-        <small>${news.date} • ${news.category}</small>
-      `;
-      newsContainer.appendChild(card);
+    const newsData = { title, description, image, category, date };
 
-      // Hero slide
-      if (news.image) {
-        const slideDiv = document.createElement("div");
-        slideDiv.className = "hero-slide";
-        slideDiv.innerHTML = `
-          <img src="${news.image}" alt="${news.title}">
-          <div class="hero-overlay"><h2>${news.title}</h2></div>
+    if (editingKey) {
+      update(ref(db, "news/" + editingKey), newsData);
+      editingKey = null;
+    } else {
+      push(ref(db, "news"), newsData);
+    }
+
+    newsForm.reset();
+  });
+
+  // Firebase-аас мэдээ татах
+  const newsRef = ref(db, "news");
+  onValue(newsRef, (snapshot) => {
+    newsList.innerHTML = "";
+    const data = snapshot.val();
+    if (data) {
+      Object.keys(data).reverse().forEach(key => {
+        const news = data[key];
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${news.title}</td>
+          <td>${news.category}</td>
+          <td>${news.date}</td>
+          <td><button class="btn edit-btn">Засах</button></td>
+          <td><button class="btn delete-btn">Устгах</button></td>
         `;
-        heroContainer.appendChild(slideDiv);
-        slides.push(slideDiv);
-      }
-    });
 
-    // Slide show
-    showSlide(0);
-    setInterval(() => nextSlide(), 4000);
+        // Засах товч
+        tr.querySelector(".edit-btn").addEventListener("click", () => {
+          document.getElementById("title").value = news.title;
+          document.getElementById("description").value = news.description;
+          document.getElementById("image").value = news.image;
+          document.getElementById("category").value = news.category;
+          document.getElementById("date").value = news.date;
+          editingKey = key;
+        });
 
-    // Read more toggle
-    document.querySelectorAll('.read-more').forEach(link => {
-      link.addEventListener('click', function(e){
-        e.preventDefault();
-        const full = this.previousElementSibling;
-        if(full.style.display === 'none'){
-          full.style.display = 'block';
-          this.textContent = 'Багасгах ↑';
-        } else {
-          full.style.display = 'none';
-          this.textContent = 'Дэлгэрэнгүй унших →';
-        }
+        // Устгах товч
+        tr.querySelector(".delete-btn").addEventListener("click", () => {
+          if (confirm("Энэ мэдээг устгах уу?")) {
+            remove(ref(db, "news/" + key));
+          }
+        });
+
+        newsList.appendChild(tr);
       });
-    });
-  }
-});
-
-function showSlide(index){
-  slides.forEach((s,i) => s.style.display = (i===index ? "block" : "none"));
-  currentSlide = index;
-}
-
-function nextSlide(){
-  if(slides.length>0) showSlide((currentSlide+1)%slides.length);
-}
+    }
+  });
 </script>
 
 </body>

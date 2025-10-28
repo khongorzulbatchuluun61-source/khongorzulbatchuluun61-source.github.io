@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Redbox Мэдээний портал</title>
+<title>Мэдээний дэлгэрэнгүй</title>
 <style>
 body {
   margin: 0;
@@ -11,263 +11,62 @@ body {
   background: #f4f4f4;
   color: #333;
 }
-
-/* Header */
 header {
   background: #0077cc;
-  color: #fff;
-  padding: 15px 20px;
+  color: white;
   text-align: center;
+  padding: 15px;
 }
-header h1 {
-  margin: 0;
-  font-size: 28px;
-}
-nav {
-  margin-top: 10px;
-  text-align: center;
-}
-nav a {
+header a {
   color: #fff;
-  margin: 0 10px;
   text-decoration: none;
   font-weight: bold;
 }
-nav a:hover {
-  text-decoration: underline;
+.article {
+  max-width: 900px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-
-/* Hero carousel */
-.hero-container {
-  position: relative;
+.article img {
   width: 100%;
-  max-height: 400px;
-  overflow: hidden;
+  border-radius: 8px;
   margin-bottom: 20px;
 }
-.hero-slide {
-  width: 100%;
-  display: none;
-  position: relative;
-}
-.hero-slide img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 8px;
-}
-.hero-overlay {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  padding: 15px;
-  border-radius: 5px;
-  max-width: 70%;
-}
-.hero-overlay h2 {
-  margin: 0;
-}
-
-/* Info Board */
-.info-board {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-}
-.info-card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  width: 280px;
-  text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.info-card h2 {
-  margin-top: 0;
+.article h1 {
   color: #0077cc;
-}
-.info-card a {
-  color: #0077cc;
-  text-decoration: none;
-  font-weight: bold;
-}
-.info-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* --- Мэдээний хэсэг --- */
-#news-section {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  text-align: center;
-}
-#news-section h2 {
-  font-size: 30px;
-  margin-bottom: 30px;
-  color: #0077cc;
-  border-bottom: 3px solid #0077cc;
-  display: inline-block;
-  padding-bottom: 5px;
-}
-.news-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-.news-card {
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-.news-card:hover {
-  transform: translateY(-5px);
-}
-.news-card h3 {
-  margin-top: 10px;
-  color: #0077cc;
-}
-.news-card img {
-  width: 100%;
-  border-radius: 6px;
   margin-bottom: 10px;
 }
-.news-card small {
-  display: block;
-  margin-top: 8px;
+.article small {
   color: #777;
-  font-size: 13px;
 }
-
-/* Contact Card */
-.contact-card {
-  background: #e6f0ff;
-  border: 2px solid #0077cc;
-  width: 100%;
-  padding: 20px;
-  margin: 40px 0 20px;
-  max-width: 1200px;
-}
-.contact-card h2 {
-  color: #0077cc;
-  margin-bottom: 15px;
-}
-.contact-card a {
-  color: #005fa3;
-  text-decoration: underline;
-}
-.contact-buttons {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-.contact-buttons .btn {
-  display: inline-block;
-  padding: 8px 12px;
-  background: #0077cc;
-  color: #fff;
-  border-radius: 5px;
-  text-decoration: none;
-  font-weight: bold;
-}
-.contact-buttons .btn:hover {
-  background: #005fa3;
-}
-
-/* Footer */
 footer {
   text-align: center;
   padding: 15px 0;
   background: #333;
   color: #fff;
-  margin-top: 20px;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .hero-overlay {
-    max-width: 90%;
-    font-size: 14px;
-  }
-  .info-card {
-    width: 90%;
-  }
-  .contact-card {
-    width: 90%;
-  }
-  #news-section h2 {
-    font-size: 24px;
-  }
+  margin-top: 40px;
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Redbox</h1>
-  <nav>
-    <a href="#">Эхлэл</a>
-    <a href="#">Соёл урлаг</a>
-    <a href="#">Эдийн засаг</a>
-    <a href="#">Спорт</a>
-    <a href="#">Нийгэм</a>
-  </nav>
+  <a href="index.html">← Буцах</a>
+  <h1>Мэдээний дэлгэрэнгүй</h1>
 </header>
 
-<!-- Hero carousel -->
-<div class="hero-container" id="hero-container"></div>
-
-<!-- Info-board -->
-<section class="info-board">
-  <div class="info-card">
-    <h2>🌟 Онцлох мэдээ</h2>
-    <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
-  </div>
-
-  <div class="info-card">
-    <h2>🌐 Facebook хуудас</h2>
-    <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
-  </div>
-</section>
-
-<!-- 📰 Мэдээний хэсэг -->
-<section id="news-section">
-  <h2>📰 Мэдээ</h2>
-  <div class="news-container" id="news-container"></div>
-</section>
-
-<!-- Contact Card -->
-<div class="contact-card">
-  <h2>📞 Холбоо барих</h2>
-  <div class="contact-info" style="text-align:center;">
-    <p>Утас: <strong>94344777</strong></p>
-    <p>И-мэйл: <a href="mailto:redbox@gmail.com">redbox@gmail.com</a></p>
-    <p>Хаяг: Өвөрхангай аймаг, Арвайхээр хот</p>
-    <p>Facebook: <a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX</a></p>
-  </div>
-  <div class="contact-buttons" style="justify-content:center;">
-    <a href="tel:94344777" class="btn">Дуудлага хийх</a>
-    <a href="mailto:redbox@gmail.com" class="btn">И-мэйл илгээх</a>
-  </div>
-</div>
+<div class="article" id="article"></div>
 
 <footer>
-  &copy; 2025 Мэдээний портал
+  &copy; 2025 REDBOX
 </footer>
 
-<!-- Firebase integration -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
@@ -283,58 +82,31 @@ footer {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  const newsContainer = document.getElementById("news-container");
-  const heroContainer = document.getElementById("hero-container");
+  const article = document.getElementById("article");
 
-  let slides = [];
-  let currentSlide = 0;
+  // URL-аас ID авах
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-  const newsRef = ref(db, "news");
-  onValue(newsRef, (snapshot) => {
-    newsContainer.innerHTML = "";
-    heroContainer.innerHTML = "";
-    slides = [];
-
-    const data = snapshot.val();
-    if (data) {
-      Object.keys(data).reverse().forEach((key) => {
-        const news = data[key];
-
-        // --- Мэдээний карт ---
-        const card = document.createElement("div");
-        card.className = "news-card";
-        card.innerHTML = `
-          ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
-          <h3>${news.title}</h3>
-          <p>${news.description || ""}</p>
-          <small>${news.date || ""} • ${news.category || ""}</small>
+  if (id) {
+    const newsRef = ref(db, "news/" + id);
+    get(newsRef).then(snapshot => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        article.innerHTML = `
+          ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ""}
+          <h1>${data.title}</h1>
+          <small>${data.date || ""} • ${data.category || ""}</small>
+          <p style="margin-top:20px;">${data.fulltext || data.description || ""}</p>
         `;
-        newsContainer.appendChild(card);
-
-        // --- Слайд ---
-        if (news.image) {
-          const slideDiv = document.createElement("div");
-          slideDiv.className = "hero-slide";
-          slideDiv.innerHTML = `
-            <img src="${news.image}" alt="${news.title}">
-            <div class="hero-overlay"><h2>${news.title}</h2></div>
-          `;
-          heroContainer.appendChild(slideDiv);
-          slides.push(slideDiv);
-        }
-      });
-      showSlide(0);
-      setInterval(() => nextSlide(), 4000);
-    }
-  });
-
-  function showSlide(index) {
-    slides.forEach((s, i) => (s.style.display = i === index ? "block" : "none"));
-    currentSlide = index;
-  }
-  function nextSlide() {
-    if (slides.length > 0) showSlide((currentSlide + 1) % slides.length);
+      } else {
+        article.innerHTML = "<p>⚠️ Уг мэдээ олдсонгүй.</p>";
+      }
+    });
+  } else {
+    article.innerHTML = "<p>⚠️ Мэдээний ID дамжуулагдаагүй байна.</p>";
   }
 </script>
+
 </body>
 </html>

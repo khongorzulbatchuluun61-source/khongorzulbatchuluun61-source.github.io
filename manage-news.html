@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мэдээ удирдах</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+h1 { color: #0077cc; text-align: center; }
+.news-list { max-width: 800px; margin: 0 auto; }
+.news-item { background: #fff; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+.news-item img { width: 100px; height: 70px; object-fit: cover; border-radius: 6px; margin-right: 10px; }
+.news-details { flex: 1; }
+.news-actions button { margin-left: 5px; padding: 6px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.news-actions .edit { background: #0077cc; color: #fff; }
+.news-actions .delete { background: #cc0000; color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Мэдээ удирдах</h1>
+<div class="news-list" id="news-list"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
+  authDomain: "khongorzul-news.firebaseapp.com",
+  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "khongorzul-news",
+  storageBucket: "khongorzul-news.firebasestorage.app",
+  messagingSenderId: "489440213839",
+  appId: "1:489440213839:web:b11ae043901031220a633a",
+  measurementId: "G-BJKJVZYKLL"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const newsList = document.getElementById("news-list");
+const newsRef = ref(db, "news");
+
+onValue(newsRef, (snapshot) => {
+  newsList.innerHTML = "";
+  const data = snapshot.val();
+  if (data) {
+    Object.keys(data).reverse().forEach(key => {
+      const news = data[key];
+
+      const item = document.createElement("div");
+      item.className = "news-item";
+      item.innerHTML = `
+        <div style="display:flex; align-items:center;">
+          ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
+          <div class="news-details">
+            <h3>${news.title}</h3>
+            <p>${news.description || ""}</p>
+          </div>
+        </div>
+        <div class="news-actions">
+          <button class="edit" onclick="editNews('${key}')">Засах</button>
+          <button class="delete" onclick="deleteNews('${key}')">Устгах</button>
+        </div>
+      `;
+      newsList.appendChild(item);
+    });
+  }
+});
+
+window.deleteNews = function(key) {
+  if (confirm("Мэдээг устгах уу?")) {
+    remove(ref(db, "news/" + key));
+  }
+}
+
+window.editNews = function(key) {
+  alert("Засах функц хийгдээгүй, дараагийн алхамд нэмнэ.");
+}
+</script>
+
+</body>
+</html>

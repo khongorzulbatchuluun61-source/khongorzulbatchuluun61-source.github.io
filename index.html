@@ -3,6 +3,146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Админ - Мэдээ нэмэх</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
+h1 { color:#0077cc; text-align:center; }
+form { max-width:500px; margin:0 auto; background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+form label { display:block; margin-top:15px; font-weight:bold; }
+form input[type="text"], form textarea, form select { width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
+form input[type="file"] { margin-top:5px; }
+form button { margin-top:20px; padding:10px 15px; background:#0077cc; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
+form button:hover { background:#005fa3; }
+img#preview { margin-top:10px; max-width:100%; border-radius:5px; }
+.success { color: green; text-align:center; margin-top:15px; }
+.error { color: red; text-align:center; margin-top:15px; }
+</style>
+</head>
+<body>
+
+<h1>🟢 Мэдээ нэмэх</h1>
+
+<form id="newsForm">
+  <label for="title">Гарчиг:</label>
+  <input type="text" id="title" required>
+
+  <label for="description">Товч тайлбар:</label>
+  <textarea id="description" rows="2" required></textarea>
+
+  <label for="fulltext">Дэлгэрэнгүй текст:</label>
+  <textarea id="fulltext" rows="5" required></textarea>
+
+  <label for="category">Категори сонгох:</label>
+  <select id="category" required>
+    <option value="">Сонгоно уу</option>
+    <option value="Ерөнхий">Ерөнхий</option>
+    <option value="Технологи">Технологи</option>
+    <option value="Спорт">Спорт</option>
+    <option value="Соёл">Соёл</option>
+  </select>
+
+  <label for="image">Зураг сонгох:</label>
+  <input type="file" id="image" accept="image/*" required>
+  <img id="preview" src="" alt="Урьдчилан харах зураг" style="display:none;">
+
+  <button type="submit">Мэдээ нэмэх</button>
+</form>
+
+<p class="success" id="successMsg"></p>
+<p class="error" id="errorMsg"></p>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
+  authDomain: "khongorzul-news.firebaseapp.com",
+  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "khongorzul-news",
+  storageBucket: "khongorzul-news.firebasestorage.app",
+  messagingSenderId: "489440213839",
+  appId: "1:489440213839:web:b11ae043901031220a633a",
+  measurementId: "G-BJKJVZYKLL"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+const form = document.getElementById("newsForm");
+const successMsg = document.getElementById("successMsg");
+const errorMsg = document.getElementById("errorMsg");
+const imageInput = document.getElementById("image");
+const preview = document.getElementById("preview");
+
+// Урьдчилан харах зураг
+imageInput.addEventListener("change", () => {
+  const file = imageInput.files[0];
+  if (file) {
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
+});
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  successMsg.textContent = "";
+  errorMsg.textContent = "";
+
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const fulltext = document.getElementById("fulltext").value.trim();
+  const category = document.getElementById("category").value;
+  const imageFile = imageInput.files[0];
+
+  if (!title || !description || !fulltext || !category || !imageFile) {
+    errorMsg.textContent = "Бүх талбарыг бөглөнө үү!";
+    return;
+  }
+
+  try {
+    // 1️⃣ Зураг байршуулж URL авах
+    const imageRef = sRef(storage, `news_images/${Date.now()}_${imageFile.name}`);
+    await uploadBytes(imageRef, imageFile);
+    const imageUrl = await getDownloadURL(imageRef);
+
+    // 2️⃣ Мэдээний объект үүсгэх
+    const newsRef = ref(db, "news");
+    const newNewsRef = push(newsRef);
+    const newsData = {
+      title,
+      description,
+      fulltext,
+      category,
+      image: imageUrl,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    // 3️⃣ Firebase Database-д хадгалах
+    await set(newNewsRef, newsData);
+
+    successMsg.textContent = "Мэдээ амжилттай нэмэгдлээ!";
+    form.reset();
+    preview.style.display = "none";
+  } catch (err) {
+    console.error(err);
+    errorMsg.textContent = "Алдаа гарлаа: " + err.message;
+  }
+});
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Мэдээний портал</title>
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }

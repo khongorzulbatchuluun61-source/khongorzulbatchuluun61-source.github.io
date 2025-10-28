@@ -13,22 +13,25 @@ nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
 nav a:hover { text-decoration:underline; }
 
 /* Hero carousel */
-.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; }
-.hero-slide { width:100%; display:none; position:relative; }
+.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; border-radius:8px; }
+.hero-slide { width:100%; display:none; position:relative; transition: opacity 0.8s ease; }
 .hero-slide img { width:100%; height:auto; display:block; border-radius:8px; }
-.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; }
-.hero-overlay h2 { margin:0; }
+.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; opacity:0; transition: opacity 0.5s; }
+.hero-slide.active .hero-overlay { opacity:1; }
+.hero-overlay h2 { margin:0 0 5px 0; font-size:20px; }
+.hero-overlay p { margin:0; font-size:14px; }
 
 /* Info Board */
 .info-board { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
-.info-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:280px; text-align:center; transition:transform 0.2s, box-shadow 0.2s; }
+.info-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:280px; text-align:center; transition:transform 0.3s, box-shadow 0.3s; }
 .info-card h2 { margin-top:0; color:#0077cc; }
 .info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
 .info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
 
 /* News Section */
 .news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
-.news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
+.news-card:hover { transform:translateY(-5px); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
 .news-card h3 { margin-top:0; color:#0077cc; }
 .news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
 
@@ -90,7 +93,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
     <p>И-мэйл: <a href="mailto:example@domain.com">example@domain.com</a></p>
     <p>Хаяг: Улаанбаатар хот, Сүхбаатар дүүрэг</p>
   </div>
-  <div class="contact-buttons" style="justify-content:center;">
+  <div class="contact-buttons">
     <a href="tel:99001234" class="btn">Дуудлага хийх</a>
     <a href="mailto:example@domain.com" class="btn">И-мэйл илгээх</a>
   </div>
@@ -152,19 +155,22 @@ onValue(newsRef, (snapshot) => {
         slideDiv.className = "hero-slide";
         slideDiv.innerHTML = `
           <img src="${news.image}" alt="${news.title}">
-          <div class="hero-overlay"><h2>${news.title}</h2></div>
+          <div class="hero-overlay">
+            <h2>${news.title}</h2>
+            <p>${news.description || ""}</p>
+          </div>
         `;
         heroContainer.appendChild(slideDiv);
         slides.push(slideDiv);
       }
     });
     showSlide(0);
-    setInterval(() => nextSlide(), 4000);
+    if(slides.length>1) setInterval(() => nextSlide(), 4000);
   }
 });
 
 function showSlide(index) {
-  slides.forEach((s,i)=> s.style.display = (i===index?"block":"none"));
+  slides.forEach((s,i)=> s.classList.toggle("active", i===index));
   currentSlide = index;
 }
 

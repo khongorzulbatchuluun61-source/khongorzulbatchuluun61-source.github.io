@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мэдээ оруулах - Админ</title>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f4f4; padding:20px; }
+h1 { color:#0077cc; text-align:center; }
+form { background:#fff; padding:20px; max-width:500px; margin:0 auto; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+form input, form textarea { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+form button { background:#0077cc; color:#fff; padding:10px 15px; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
+form button:hover { background:#005fa3; }
+.success { color:green; text-align:center; }
+.error { color:red; text-align:center; }
+</style>
+</head>
+<body>
+
+<h1>Мэдээ оруулах - Админ</h1>
+
+<form id="newsForm">
+  <label>Гарчиг:</label>
+  <input type="text" id="title" placeholder="Мэдээний гарчиг" required>
+  
+  <label>Тайлбар:</label>
+  <textarea id="description" placeholder="Мэдээний текст" rows="5" required></textarea>
+  
+  <label>Зураг:</label>
+  <input type="file" id="image" accept="image/*">
+  
+  <label>Ангилал:</label>
+  <input type="text" id="category" placeholder="Улс төр, Спорт гэх мэт" required>
+  
+  <button type="submit">Нэмэх</button>
+</form>
+
+<p class="success" id="successMsg"></p>
+<p class="error" id="errorMsg"></p>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+
+// Firebase тохиргоо
+const firebaseConfig = {
+  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
+  authDomain: "khongorzul-news.firebaseapp.com",
+  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "khongorzul-news",
+  storageBucket: "khongorzul-news.firebasestorage.app",
+  messagingSenderId: "489440213839",
+  appId: "1:489440213839:web:b11ae043901031220a633a",
+  measurementId: "G-BJKJVZYKLL"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+const form = document.getElementById("newsForm");
+const successMsg = document.getElementById("successMsg");
+const errorMsg = document.getElementById("errorMsg");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  successMsg.textContent = "";
+  errorMsg.textContent = "";
+
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const category = document.getElementById("category").value.trim();
+  const imageFile = document.getElementById("image").files[0];
+
+  let imageUrl = "";
+  try {
+    if (imageFile) {
+      const storageReference = sRef(storage, "news-images/" + imageFile.name);
+      await uploadBytes(storageReference, imageFile);
+      imageUrl = await getDownloadURL(storageReference);
+    }
+
+    const newsRef = ref(db, "news");
+    await push(newsRef, {
+      title,
+      description,
+      category,
+      image: imageUrl,
+      date: new Date().toLocaleString()
+    });
+
+    successMsg.textContent = "Мэдээ амжилттай нэмэгдлээ!";
+    form.reset();
+  } catch (err) {
+    console.error(err);
+    errorMsg.textContent = "Алдаа гарлаа, дахин оролдно уу.";
+  }
+});
+</script>
+
+</body>
+</html>

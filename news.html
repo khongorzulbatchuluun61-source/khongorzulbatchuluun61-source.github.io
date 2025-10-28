@@ -3,74 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Мэдээ оруулах</title>
+<title>Мэдээ нэмэх - Админ</title>
 <style>
-body { font-family: Arial, sans-serif; padding:20px; background:#f4f4f4; }
-form { background:#fff; padding:20px; border-radius:8px; max-width:500px; margin:auto; }
-input, textarea { width:100%; margin-bottom:15px; padding:8px; border-radius:4px; border:1px solid #ccc; }
-button { padding:10px 15px; background:#0077cc; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+header { background:#0077cc; color:#fff; text-align:center; padding:15px; }
+header h1 { margin:0; }
+.container { max-width:600px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+h2 { color:#0077cc; margin-bottom:20px; text-align:center; }
+label { display:block; margin-top:10px; font-weight:bold; }
+input[type="text"], textarea, select { width:100%; padding:8px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
+textarea { resize: vertical; }
+button { margin-top:15px; padding:10px 15px; background:#0077cc; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; }
 button:hover { background:#005fa3; }
+.success { color:green; margin-top:10px; }
+.error { color:red; margin-top:10px; }
 </style>
 </head>
 <body>
 
-<h1>Мэдээ оруулах</h1>
-<form id="newsForm">
-  <input type="text" id="title" placeholder="Гарчиг" required>
-  <textarea id="description" placeholder="Тайлбар" rows="5" required></textarea>
-  <input type="text" id="category" placeholder="Ангилал" required>
-  <input type="file" id="image" accept="image/*" required>
-  <button type="submit">Нэмэх</button>
-</form>
+<header>
+  <h1>Админ хуудас - Мэдээ нэмэх</h1>
+</header>
+
+<div class="container">
+  <h2>Шинэ мэдээ оруулах</h2>
+  <form id="newsForm">
+    <label for="title">Мэдээний гарчиг</label>
+    <input type="text" id="title" required>
+
+    <label for="description">Тайлбар</label>
+    <textarea id="description" rows="4" required></textarea>
+
+    <label for="category">Ангилал</label>
+    <select id="category" required>
+      <option value="Улс төр">Улс төр</option>
+      <option value="Эдийн засаг">Эдийн засаг</option>
+      <option value="Нийгэм">Нийгэм</option>
+      <option value="Спорт">Спорт</option>
+      <option value="Технологи">Технологи</option>
+    </select>
+
+    <label for="image">Зураг (jpg/png)</label>
+    <input type="file" id="image" accept="image/*">
+
+    <button type="submit">Нэмэх</button>
+  </form>
+  <div class="success" id="successMsg"></div>
+  <div class="error" id="errorMsg"></div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DB_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
+  authDomain: "khongorzul-news.firebaseapp.com",
+  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "khongorzul-news",
+  storageBucket: "khongorzul-news.appspot.com",
+  messagingSenderId: "489440213839",
+  appId: "1:489440213839:web:b11ae043901031220a633a",
+  measurementId: "G-BJKJVZYKLL"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-const form = document.getElementById('newsForm');
+const newsForm = document.getElementById("newsForm");
+const successMsg = document.getElementById("successMsg");
+const errorMsg = document.getElementById("errorMsg");
 
-form.addEventListener('submit', async (e) => {
+newsForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+  successMsg.textContent = "";
+  errorMsg.textContent = "";
 
-  const title = document.getElementById('title').value;
-  const description = document.getElementById('description').value;
-  const category = document.getElementById('category').value;
-  const imageFile = document.getElementById('image').files[0];
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const category = document.getElementById("category").value;
+  const imageFile = document.getElementById("image").files[0];
 
-  if (!imageFile) return alert("Зургаа сонгоно уу!");
+  let imageUrl = "";
 
-  // Firebase Storage-д зураг байрлуулах
-  const storageRef = sRef(storage, 'news/' + imageFile.name);
-  await uploadBytes(storageRef, imageFile);
-  const imageUrl = await getDownloadURL(storageRef);
+  try {
+    if(imageFile){
+      const storageRef = sRef(storage, "news_images/" + Date.now() + "_" + imageFile.name);
+      await uploadBytes(storageRef, imageFile);
+      imageUrl = await getDownloadURL(storageRef);
+    }
 
-  // Firebase Database-д мэдээ нэмэх
-  const newsRef = push(ref(db, 'news'));
-  await set(newsRef, {
-    title,
-    description,
-    category,
-    image: imageUrl,
-    date: new Date().toLocaleString()
-  });
+    const newsData = {
+      title,
+      description,
+      category,
+      image: imageUrl,
+      date: new Date().toLocaleString()
+    };
 
-  alert("Мэдээ амжилттай нэмэгдлээ!");
-  form.reset();
+    await push(ref(db, "news"), newsData);
+    successMsg.textContent = "Мэдээ амжилттай нэмэгдлээ!";
+    newsForm.reset();
+  } catch (err){
+    console.error(err);
+    errorMsg.textContent = "Алдаа гарлаа: " + err.message;
+  }
 });
 </script>
 

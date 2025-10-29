@@ -103,7 +103,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 &copy; 2025 Мэдээний портал
 </footer>
 
-<!-- Firebase integration -->
+<!-- Firebase Realtime Database integration -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
@@ -145,7 +145,7 @@ onValue(newsRef, (snapshot) => {
         ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
         <h3>${news.title}</h3>
         <p>${news.description || ""}</p>
-        <small>${news.date} • ${news.category}</small>
+        <small>${news.date} • ${news.category || ""}</small>
       `;
       newsContainer.appendChild(card);
 
@@ -166,18 +166,9 @@ onValue(newsRef, (snapshot) => {
     });
     showSlide(0);
     if(slides.length>1) setInterval(() => nextSlide(), 4000);
+  } else {
+    newsContainer.innerHTML = "<p>Мэдээ одоогоор алга байна.</p>";
   }
 });
 
-function showSlide(index) {
-  slides.forEach((s,i)=> s.classList.toggle("active", i===index));
-  currentSlide = index;
-}
-
-function nextSlide() {
-  if(slides.length>0) showSlide((currentSlide+1)%slides.length);
-}
-</script>
-
-</body>
-</html>
+function show

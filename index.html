@@ -1,207 +1,138 @@
 <!DOCTYPE html>
 <html lang="mn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Мэдээний портал</title>
-<style>
-body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
-header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
-header h1 { margin:0; font-size:28px; }
-nav { margin-top:10px; text-align:center; }
-nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
-nav a:hover { text-decoration:underline; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мэдээний портал</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
+    header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
+    header h1 { margin:0; font-size:28px; }
+    nav { margin-top:10px; text-align:center; }
+    nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
+    nav a:hover { text-decoration:underline; }
+    
+    /* Other styles here ... */
+    
+    /* News Section */
+    .news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
+    .news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
+    .news-card:hover { transform:translateY(-5px); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
+    .news-card h3 { margin-top:0; color:#0077cc; }
+    .news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
 
-/* Hero carousel */
-.hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; border-radius:8px; }
-.hero-slide { width:100%; display:none; position:relative; transition: opacity 0.8s ease; }
-.hero-slide img { width:100%; height:auto; display:block; border-radius:8px; }
-.hero-overlay { position:absolute; bottom:20px; left:20px; background:rgba(0,0,0,0.6); color:#fff; padding:15px; border-radius:5px; max-width:70%; opacity:0; transition: opacity 0.5s; }
-.hero-slide.active .hero-overlay { opacity:1; }
-.hero-overlay h2 { margin:0 0 5px 0; font-size:20px; }
-.hero-overlay p { margin:0; font-size:14px; }
-
-/* Info Board */
-.info-board { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:20px; }
-.info-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); padding:20px; width:280px; text-align:center; transition:transform 0.3s, box-shadow 0.3s; }
-.info-card h2 { margin-top:0; color:#0077cc; }
-.info-card a { color:#0077cc; text-decoration:none; font-weight:bold; }
-.info-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.15); }
-
-/* News Section */
-.news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
-.news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
-.news-card:hover { transform:translateY(-5px); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
-.news-card h3 { margin-top:0; color:#0077cc; }
-.news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
-
-/* Contact Card */
-.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; }
-.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
-.contact-card a { color: #005fa3; text-decoration: underline; }
-.contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
-.contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
-.contact-buttons .btn:hover { background: #005fa3; }
-
-/* Footer */
-footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-top:20px; }
-
-/* Mobile */
-@media(max-width:768px){ 
-  .hero-overlay { max-width:90%; font-size:14px; } 
-  .info-card { width:90%; } 
-  .contact-card { width:90%; }
-}
-</style>
+    /* Form Section */
+    .form-container { padding: 20px; background: #fff; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .form-container input, .form-container textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
+    .form-container button { background-color: #0077cc; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    .form-container button:hover { background-color: #005fa3; }
+  </style>
 </head>
 <body>
 
 <header>
-<h1>Мэдээний портал</h1>
-<nav>
-<a href="#">Эхлэл</a>
-<a href="#">Улс төр</a>
-<a href="#">Эдийн засаг</a>
-<a href="#">Спорт</a>
-<a href="#">Нийгэм</a>
-</nav>
+  <h1>Мэдээний портал</h1>
+  <nav>
+    <a href="#">Эхлэл</a>
+    <a href="#">Улс төр</a>
+    <a href="#">Эдийн засаг</a>
+    <a href="#">Спорт</a>
+    <a href="#">Нийгэм</a>
+  </nav>
 </header>
 
-<!-- Hero carousel -->
-<div class="hero-container" id="hero-container"></div>
-
-<!-- Info-board -->
-<section class="info-board">
-  <div class="info-card">
-    <h2>🌟 Онцлох мэдээ</h2>
-    <p>Гол мэдээллүүдийг товч танилцуулсан хэсэг.</p>
-  </div>
-  <div class="info-card">
-    <h2>🌐 Facebook хуудас</h2>
-    <p><a href="https://www.facebook.com/profile.php?id=61577147703989" target="_blank">REDBOX-ийн албан ёсны хуудас руу орох</a></p>
-  </div>
+<!-- Мэдээний оруулга форма -->
+<section class="form-container">
+  <h2>Шинэ мэдээ оруулах</h2>
+  <form id="news-form">
+    <input type="text" id="title" placeholder="Мэдээний гарчиг" required>
+    <textarea id="description" placeholder="Мэдээний дэлгэрэнгүй" rows="5" required></textarea>
+    <input type="text" id="image" placeholder="Зургийн URL" required>
+    <input type="text" id="category" placeholder="Категори" required>
+    <button type="submit">Оруулах</button>
+  </form>
 </section>
 
-<!-- News Section -->
-<div class="news-container" id="news-container"></div>
-
-<!-- Contact Card -->
-<div class="contact-card">
-  <h2 class="contact-toggle" style="cursor:pointer;">📞 Холбоо барих ▼</h2>
-  <div class="contact-info" style="text-align:center; display:none;">
-    <p>Утас: <strong>9900-1234</strong></p>
-    <p>И-мэйл: <a href="mailto:example@domain.com">example@domain.com</a></p>
-    <p>Хаяг: Улаанбаатар хот, Сүхбаатар дүүрэг</p>
-  </div>
-  <div class="contact-buttons">
-    <a href="tel:99001234" class="btn">Дуудлага хийх</a>
-    <a href="mailto:example@domain.com" class="btn">И-мэйл илгээх</a>
-  </div>
-</div>
-
-<footer>
-&copy; 2025 Мэдээний портал
-</footer>
+<!-- Мэдээний жагсаалт -->
+<section class="news-container" id="news-container"></section>
 
 <!-- Firebase Realtime Database integration -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
-  authDomain: "khongorzul-news.firebaseapp.com",
-  databaseURL: "https://khongorzul-news-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "khongorzul-news",
-  storageBucket: "khongorzul-news.firebasestorage.app",
-  messagingSenderId: "489440213839",
-  appId: "1:489440213839:web:b11ae043901031220a633a",
-  measurementId: "G-BJKJVZYKLL"
-};
+  // Firebase-ийн тохиргоо
+  const firebaseConfig = {
+    apiKey: "AIzaSyDLaWnlPWMWLw45bnFlPyU0Tgf95t2vvjQ",
+    authDomain: "khongsorzulnews.firebaseapp.com",
+    projectId: "khongsorzulnews",
+    storageBucket: "khongsorzulnews.firebasestorage.app",
+    messagingSenderId: "745186766365",
+    appId: "1:745186766365:web:4b22a8f0f4a0a75c23a0f4"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+  // Firebase-г эхлүүлэх
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-const newsContainer = document.getElementById("news-container");
-const heroContainer = document.getElementById("hero-container");
+  // Мэдээ оруулах функц
+  const addNews = (title, description, image, category) => {
+    const newPostRef = ref(db, 'news/' + Date.now());  // unique key ашиглаж байна
+    set(newPostRef, {
+      title: title,
+      description: description,
+      image: image,
+      category: category,
+      date: new Date().toLocaleDateString()  // Огноог хадгалж байна
+    }).then(() => {
+      alert("Мэдээ амжилттай нэмэгдлээ!");
+      document.getElementById("news-form").reset(); // Формыг цэвэрлэх
+    }).catch((error) => {
+      console.error("Мэдээ нэмэхэд алдаа гарлаа: ", error);
+    });
+  };
 
-let slides = [];
-let currentSlide = 0;
-
-// Show slide function
-function showSlide(index){
-  slides.forEach((s,i)=>s.style.display='none');
-  if(slides[index]) slides[index].style.display='block';
-  currentSlide=index;
-}
-
-function nextSlide(){
-  showSlide((currentSlide+1)%slides.length);
-}
-
-// Fetch news from Firebase
-const newsRef = ref(db, "news");
-onValue(newsRef, (snapshot) => {
-  newsContainer.innerHTML = "";
-  heroContainer.innerHTML = "";
-  slides = [];
-  const data = snapshot.val();
-  if (data) {
-    Object.keys(data).reverse().forEach(key => {
-      const news = data[key];
-
-      // News card
-      const card = document.createElement("div");
-      card.className = "news-card";
-      card.innerHTML = `
-        ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
-        <h3>${news.title}</h3>
-        <p>${news.description || ""}</p>
-        <small>${news.date || ""} • ${news.category || ""}</small>
-      `;
-      newsContainer.appendChild(card);
-
-      // Hero slide with link
-      if (news.image) {
-        const slideDiv = document.createElement("div");
-        slideDiv.className = "hero-slide";
-
-        const linkStart = news.url ? `<a href="${news.url}" target="_blank">` : "";
-        const linkEnd = news.url ? `</a>` : "";
-
-        slideDiv.innerHTML = `
-          ${linkStart}
-          <img src="${news.image}" alt="${news.title}">
-          <div class="hero-overlay">
-            <h2>${news.title}</h2>
+  // Мэдээ унших функц
+  const getNews = () => {
+    const newsRef = ref(db, 'news');
+    onValue(newsRef, (snapshot) => {
+      const data = snapshot.val();
+      const newsContainer = document.getElementById("news-container");
+      newsContainer.innerHTML = ""; // Өмнөх мэдээг арилгах
+      if (data) {
+        Object.keys(data).forEach(key => {
+          const news = data[key];
+          const newsCard = document.createElement("div");
+          newsCard.className = "news-card";
+          newsCard.innerHTML = `
+            ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
+            <h3>${news.title}</h3>
             <p>${news.description || ""}</p>
-          </div>
-          ${linkEnd}
-        `;
-        heroContainer.appendChild(slideDiv);
-        slides.push(slideDiv);
+            <small>${news.date} • ${news.category || ""}</small>
+          `;
+          newsContainer.appendChild(newsCard);
+        });
+      } else {
+        newsContainer.innerHTML = "<p>Мэдээ байхгүй байна.</p>";
       }
     });
-    if(slides.length>0) showSlide(0);
-    if(slides.length>1) setInterval(nextSlide, 4000);
-  } else {
-    newsContainer.innerHTML = "<p>Мэдээ одоогоор алга байна.</p>";
-  }
-});
+  };
 
-// Contact toggle
-const contactToggle = document.querySelector('.contact-toggle');
-const contactInfo = document.querySelector('.contact-info');
+  // Мэдээний формаа submit хийх
+  document.getElementById("news-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = document.getElementById("title").value;
+    const description = document.getElementById("description").value;
+    const image = document.getElementById("image").value;
+    const category = document.getElementById("category").value;
 
-contactToggle.addEventListener('click', () => {
-  if(contactInfo.style.display === "block") {
-    contactInfo.style.display = "none";
-    contactToggle.textContent = "📞 Холбоо барих ▼";
-  } else {
-    contactInfo.style.display = "block";
-    contactToggle.textContent = "📞 Холбоо барих ▲";
-  }
-});
+    // Мэдээ нэмэх
+    addNews(title, description, image, category);
+  });
+
+  // Мэдээ авах
+  getNews();
+
 </script>
 
 </body>

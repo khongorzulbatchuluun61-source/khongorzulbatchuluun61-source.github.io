@@ -6,11 +6,24 @@
 <title>Мэдээний портал</title>
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
-header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
+header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; position:relative; }
 header h1 { margin:0; font-size:28px; }
-nav { margin-top:10px; text-align:center; }
-nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
+nav { margin-top:10px; text-align:center; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+nav a { color:#fff; text-decoration:none; font-weight:bold; }
 nav a:hover { text-decoration:underline; }
+
+/* Hamburger Menu */
+.menu-btn {
+  display:none;
+  position:absolute;
+  top:15px;
+  right:20px;
+  font-size:28px;
+  background:none;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+}
 
 /* Hero carousel */
 .hero-container { position:relative; width:100%; max-height:400px; overflow:hidden; margin-bottom:20px; border-radius:8px; }
@@ -36,8 +49,9 @@ nav a:hover { text-decoration:underline; }
 .news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
 
 /* Contact Card */
-.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; }
+.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; text-align:center; }
 .contact-card h2 { color: #0077cc; margin-bottom: 15px; }
+.contact-info { display:none; margin-bottom:15px; }
 .contact-card a { color: #005fa3; text-decoration: underline; }
 .contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
 .contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
@@ -48,6 +62,9 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 
 /* Mobile */
 @media(max-width:768px){ 
+  .menu-btn { display:block; }
+  nav { display:none; flex-direction:column; gap:5px; }
+  nav.active { display:flex; }
   .hero-overlay { max-width:90%; font-size:14px; } 
   .info-card { width:90%; } 
   .contact-card { width:90%; }
@@ -58,6 +75,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 
 <header>
 <h1>Мэдээний портал</h1>
+<button class="menu-btn">☰</button>
 <nav>
 <a href="#">Эхлэл</a>
 <a href="#">Улс төр</a>
@@ -88,7 +106,8 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 <!-- Contact Card -->
 <div class="contact-card">
   <h2>📞 Холбоо барих</h2>
-  <div class="contact-info" style="text-align:center;">
+  <button class="contact-toggle">Дэлгэрэнгүй харуулах ▼</button>
+  <div class="contact-info">
     <p>Утас: <strong>9900-1234</strong></p>
     <p>И-мэйл: <a href="mailto:example@domain.com">example@domain.com</a></p>
     <p>Хаяг: Улаанбаатар хот, Сүхбаатар дүүрэг</p>
@@ -103,7 +122,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 &copy; 2025 Мэдээний портал
 </footer>
 
-<!-- Firebase Realtime Database integration -->
+<!-- Firebase + Carousel + Menu + Contact Toggle -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
@@ -171,4 +190,35 @@ onValue(newsRef, (snapshot) => {
   }
 });
 
-function show
+function showSlide(index){
+  slides.forEach((slide,i)=>{
+    slide.style.display = (i===index) ? "block":"none";
+    slide.classList.toggle("active", i===index);
+  });
+  currentSlide = index;
+}
+function nextSlide(){
+  showSlide((currentSlide+1)%slides.length);
+}
+
+// Hamburger Menu
+const menuBtn = document.querySelector('.menu-btn');
+const nav = document.querySelector('nav');
+menuBtn.addEventListener('click', ()=>nav.classList.toggle('active'));
+
+// Contact Toggle
+const contactToggle = document.querySelector('.contact-toggle');
+const contactInfo = document.querySelector('.contact-info');
+contactToggle.addEventListener('click', ()=>{
+  if(contactInfo.style.display==="block"){
+    contactInfo.style.display="none";
+    contactToggle.textContent="Дэлгэрэнгүй харуулах ▼";
+  } else {
+    contactInfo.style.display="block";
+    contactToggle.textContent="Дэлгэрэнгүй хаах ▲";
+  }
+});
+</script>
+
+</body>
+</html>

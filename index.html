@@ -6,23 +6,19 @@
 <title>Мэдээний портал</title>
 <style>
 body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
-header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; position:relative; }
+header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; position: relative; }
 header h1 { margin:0; font-size:28px; }
-nav { margin-top:10px; text-align:center; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-nav a { color:#fff; text-decoration:none; font-weight:bold; }
+nav { margin-top:10px; text-align:center; }
+nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
 nav a:hover { text-decoration:underline; }
 
-/* Hamburger Menu */
-.menu-btn {
-  display:none;
-  position:absolute;
-  top:15px;
-  right:20px;
-  font-size:28px;
-  background:none;
-  border:none;
-  color:#fff;
-  cursor:pointer;
+/* Hamburger button */
+.menu-btn { display:none; position:absolute; top:18px; left:20px; cursor:pointer; font-size:24px; }
+nav.active { display:block !important; }
+@media(max-width:768px){
+  .menu-btn { display:block; }
+  nav { display:none; flex-direction:column; }
+  nav a { display:block; margin:10px 0; }
 }
 
 /* Hero carousel */
@@ -49,9 +45,8 @@ nav a:hover { text-decoration:underline; }
 .news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
 
 /* Contact Card */
-.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; text-align:center; }
-.contact-card h2 { color: #0077cc; margin-bottom: 15px; }
-.contact-info { display:none; margin-bottom:15px; }
+.contact-card { background: #e6f0ff; border: 2px solid #0077cc; width:100%; padding:20px; margin:40px 0 20px; max-width:1200px; }
+.contact-card h2 { color: #0077cc; margin-bottom: 15px; cursor:pointer; }
 .contact-card a { color: #005fa3; text-decoration: underline; }
 .contact-buttons { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
 .contact-buttons .btn { display: inline-block; padding: 8px 12px; background: #0077cc; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold; }
@@ -60,11 +55,8 @@ nav a:hover { text-decoration:underline; }
 /* Footer */
 footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-top:20px; }
 
-/* Mobile */
+/* Mobile adjustments */
 @media(max-width:768px){ 
-  .menu-btn { display:block; }
-  nav { display:none; flex-direction:column; gap:5px; }
-  nav.active { display:flex; }
   .hero-overlay { max-width:90%; font-size:14px; } 
   .info-card { width:90%; } 
   .contact-card { width:90%; }
@@ -75,7 +67,7 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 
 <header>
 <h1>Мэдээний портал</h1>
-<button class="menu-btn">☰</button>
+<div class="menu-btn">☰</div>
 <nav>
 <a href="#">Эхлэл</a>
 <a href="#">Улс төр</a>
@@ -105,9 +97,8 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 
 <!-- Contact Card -->
 <div class="contact-card">
-  <h2>📞 Холбоо барих</h2>
-  <button class="contact-toggle">Дэлгэрэнгүй харуулах ▼</button>
-  <div class="contact-info">
+  <h2 class="contact-toggle">📞 Холбоо барих ▼</h2>
+  <div class="contact-info" style="text-align:center; display:none;">
     <p>Утас: <strong>9900-1234</strong></p>
     <p>И-мэйл: <a href="mailto:example@domain.com">example@domain.com</a></p>
     <p>Хаяг: Улаанбаатар хот, Сүхбаатар дүүрэг</p>
@@ -122,11 +113,11 @@ footer { text-align:center; padding:15px 0; background:#333; color:#fff; margin-
 &copy; 2025 Мэдээний портал
 </footer>
 
-<!-- Firebase + Carousel + Menu + Contact Toggle -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
+// Firebase setup
 const firebaseConfig = {
   apiKey: "AIzaSyCEZS_SYNYTM49tlk8VQXTXcHW2poSJdEI",
   authDomain: "khongorzul-news.firebaseapp.com",
@@ -147,6 +138,52 @@ const heroContainer = document.getElementById("hero-container");
 let slides = [];
 let currentSlide = 0;
 
+// Hamburger menu toggle
+const menuBtn = document.querySelector('.menu-btn');
+const nav = document.querySelector('nav');
+menuBtn.addEventListener('click', () => {
+  nav.classList.toggle('active');
+});
+
+// Холбоо барих toggle
+const contactToggle = document.querySelector('.contact-toggle');
+const contactInfo = document.querySelector('.contact-info');
+contactToggle.addEventListener('click', () => {
+  if(contactInfo.style.display === "block") {
+    contactInfo.style.display = "none";
+    contactToggle.textContent = "📞 Холбоо барих ▼";
+  } else {
+    contactInfo.style.display = "block";
+    contactToggle.textContent = "📞 Холбоо барих ▲";
+  }
+});
+
+// Hero carousel functions
+function showSlide(index) {
+  if(slides.length === 0) return;
+  slides.forEach((slide, i) => slide.style.display = i === index ? "block" : "none");
+  currentSlide = index;
+}
+
+function nextSlide() {
+  showSlide((currentSlide + 1) % slides.length);
+}
+
+// Swipe support for mobile
+let startX = 0;
+heroContainer.addEventListener('touchstart', (e) => {
+  startX = e.touches[0].clientX;
+});
+heroContainer.addEventListener('touchend', (e) => {
+  let endX = e.changedTouches[0].clientX;
+  if (endX - startX > 50) {
+    showSlide((currentSlide - 1 + slides.length) % slides.length);
+  } else if (startX - endX > 50) {
+    showSlide((currentSlide + 1) % slides.length);
+  }
+});
+
+// Fetch news from Firebase
 const newsRef = ref(db, "news");
 onValue(newsRef, (snapshot) => {
   newsContainer.innerHTML = "";
@@ -164,7 +201,7 @@ onValue(newsRef, (snapshot) => {
         ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
         <h3>${news.title}</h3>
         <p>${news.description || ""}</p>
-        <small>${news.date} • ${news.category || ""}</small>
+        <small>${news.date || ""} • ${news.category || ""}</small>
       `;
       newsContainer.appendChild(card);
 
@@ -183,39 +220,10 @@ onValue(newsRef, (snapshot) => {
         slides.push(slideDiv);
       }
     });
-    showSlide(0);
-    if(slides.length>1) setInterval(() => nextSlide(), 4000);
+    if(slides.length>0) showSlide(0);
+    if(slides.length>1) setInterval(nextSlide, 4000);
   } else {
     newsContainer.innerHTML = "<p>Мэдээ одоогоор алга байна.</p>";
-  }
-});
-
-function showSlide(index){
-  slides.forEach((slide,i)=>{
-    slide.style.display = (i===index) ? "block":"none";
-    slide.classList.toggle("active", i===index);
-  });
-  currentSlide = index;
-}
-function nextSlide(){
-  showSlide((currentSlide+1)%slides.length);
-}
-
-// Hamburger Menu
-const menuBtn = document.querySelector('.menu-btn');
-const nav = document.querySelector('nav');
-menuBtn.addEventListener('click', ()=>nav.classList.toggle('active'));
-
-// Contact Toggle
-const contactToggle = document.querySelector('.contact-toggle');
-const contactInfo = document.querySelector('.contact-info');
-contactToggle.addEventListener('click', ()=>{
-  if(contactInfo.style.display==="block"){
-    contactInfo.style.display="none";
-    contactToggle.textContent="Дэлгэрэнгүй харуулах ▼";
-  } else {
-    contactInfo.style.display="block";
-    contactToggle.textContent="Дэлгэрэнгүй хаах ▲";
   }
 });
 </script>

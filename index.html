@@ -4,135 +4,144 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Мэдээний портал</title>
-  <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#f4f4f4; color:#333; }
-    header { background:#0077cc; color:#fff; padding:15px 20px; text-align:center; }
-    header h1 { margin:0; font-size:28px; }
-    nav { margin-top:10px; text-align:center; }
-    nav a { color:#fff; margin:0 10px; text-decoration:none; font-weight:bold; }
-    nav a:hover { text-decoration:underline; }
-    
-    /* Other styles here ... */
-    
-    /* News Section */
-    .news-container { max-width:900px; margin:0 auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:15px; }
-    .news-card { background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
-    .news-card:hover { transform:translateY(-5px); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
-    .news-card h3 { margin-top:0; color:#0077cc; }
-    .news-card img { width:100%; border-radius:6px; margin-bottom:10px; }
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+  
+  <script type="module" src="firebase-config.js"></script>
 
-    /* Form Section */
-    .form-container { padding: 20px; background: #fff; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .form-container input, .form-container textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; }
-    .form-container button { background-color: #0077cc; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-    .form-container button:hover { background-color: #005fa3; }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      background: #0077cc;
+      color: #fff;
+      padding: 15px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .news-container {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .news-card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .news-card img {
+      width: 100%;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      background: #333;
+      color: #fff;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Мэдээний портал</h1>
-  <nav>
-    <a href="#">Эхлэл</a>
-    <a href="#">Улс төр</a>
-    <a href="#">Эдийн засаг</a>
-    <a href="#">Спорт</a>
-    <a href="#">Нийгэм</a>
-  </nav>
 </header>
 
-<!-- Мэдээний оруулга форма -->
-<section class="form-container">
+<!-- News Section -->
+<div class="news-container" id="news-container">
+  <!-- News will be dynamically loaded here -->
+</div>
+
+<!-- Add News Form -->
+<section>
   <h2>Шинэ мэдээ оруулах</h2>
   <form id="news-form">
-    <input type="text" id="title" placeholder="Мэдээний гарчиг" required>
-    <textarea id="description" placeholder="Мэдээний дэлгэрэнгүй" rows="5" required></textarea>
-    <input type="text" id="image" placeholder="Зургийн URL" required>
-    <input type="text" id="category" placeholder="Категори" required>
-    <button type="submit">Оруулах</button>
+    <label for="title">Гарчиг:</label>
+    <input type="text" id="title" required><br><br>
+
+    <label for="description">Тайлбар:</label>
+    <textarea id="description" required></textarea><br><br>
+
+    <label for="imageUrl">Зургийн URL:</label>
+    <input type="text" id="imageUrl"><br><br>
+
+    <button type="submit">Мэдээ оруулах</button>
   </form>
 </section>
 
-<!-- Мэдээний жагсаалт -->
-<section class="news-container" id="news-container"></section>
+<footer>
+  &copy; 2025 Мэдээний портал
+</footer>
 
-<!-- Firebase Realtime Database integration -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+<script>
+  // Firebase functions (imported from firebase-config.js)
+  import { addNews } from './firebase-config.js';
 
-  // Firebase-ийн тохиргоо
-  const firebaseConfig = {
-    apiKey: "AIzaSyDLaWnlPWMWLw45bnFlPyU0Tgf95t2vvjQ",
-    authDomain: "khongsorzulnews.firebaseapp.com",
-    projectId: "khongsorzulnews",
-    storageBucket: "khongsorzulnews.firebasestorage.app",
-    messagingSenderId: "745186766365",
-    appId: "1:745186766365:web:4b22a8f0f4a0a75c23a0f4"
-  };
+  // Handle form submission
+  document.getElementById("news-form").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-  // Firebase-г эхлүүлэх
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  // Мэдээ оруулах функц
-  const addNews = (title, description, image, category) => {
-    const newPostRef = ref(db, 'news/' + Date.now());  // unique key ашиглаж байна
-    set(newPostRef, {
-      title: title,
-      description: description,
-      image: image,
-      category: category,
-      date: new Date().toLocaleDateString()  // Огноог хадгалж байна
-    }).then(() => {
-      alert("Мэдээ амжилттай нэмэгдлээ!");
-      document.getElementById("news-form").reset(); // Формыг цэвэрлэх
-    }).catch((error) => {
-      console.error("Мэдээ нэмэхэд алдаа гарлаа: ", error);
-    });
-  };
-
-  // Мэдээ унших функц
-  const getNews = () => {
-    const newsRef = ref(db, 'news');
-    onValue(newsRef, (snapshot) => {
-      const data = snapshot.val();
-      const newsContainer = document.getElementById("news-container");
-      newsContainer.innerHTML = ""; // Өмнөх мэдээг арилгах
-      if (data) {
-        Object.keys(data).forEach(key => {
-          const news = data[key];
-          const newsCard = document.createElement("div");
-          newsCard.className = "news-card";
-          newsCard.innerHTML = `
-            ${news.image ? `<img src="${news.image}" alt="${news.title}">` : ""}
-            <h3>${news.title}</h3>
-            <p>${news.description || ""}</p>
-            <small>${news.date} • ${news.category || ""}</small>
-          `;
-          newsContainer.appendChild(newsCard);
-        });
-      } else {
-        newsContainer.innerHTML = "<p>Мэдээ байхгүй байна.</p>";
-      }
-    });
-  };
-
-  // Мэдээний формаа submit хийх
-  document.getElementById("news-form").addEventListener("submit", (e) => {
-    e.preventDefault();
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
-    const image = document.getElementById("image").value;
-    const category = document.getElementById("category").value;
+    const imageUrl = document.getElementById("imageUrl").value;
 
-    // Мэдээ нэмэх
-    addNews(title, description, image, category);
+    // Call addNews function to add the news item to Firestore
+    addNews({ title, description, imageUrl });
+
+    // Optionally, reset the form
+    document.getElementById("news-form").reset();
   });
 
-  // Мэдээ авах
-  getNews();
+  // Load news from Firestore
+  import { getFirestore, collection, getDocs } from "firebase/firestore";
+  const db = getFirestore();
 
+  async function loadNews() {
+    const newsContainer = document.getElementById("news-container");
+    const querySnapshot = await getDocs(collection(db, "news"));
+    querySnapshot.forEach(doc => {
+      const news = doc.data();
+      const newsCard = document.createElement("div");
+      newsCard.className = "news-card";
+      newsCard.innerHTML = `
+        <img src="${news.imageUrl}" alt="${news.title}">
+        <h3>${news.title}</h3>
+        <p>${news.description}</p>
+      `;
+      newsContainer.appendChild(newsCard);
+    });
+  }
+
+  // Call loadNews to display news on page load
+  loadNews();
 </script>
 
 </body>
